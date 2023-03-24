@@ -1,3 +1,5 @@
 import mockData from './mockData.json';
+import mockNews from './new-and-recommendation.json'
 
-const { authors, books, users } = mockData;
+export const { authors, books, users } = mockData;
+export const { news, recommendedBooks } = mockNews;

@@ -1,7 +1,9 @@
 import React from 'react'
-import { Avatar, Box, Container } from '@mantine/core'
+import { Avatar, Box, Container, Grid } from '@mantine/core'
 import { HeaderResponsive } from '../../components/HeaderResponsive'
 import { useSelector } from 'react-redux'
+import { news } from '../../api/mock'
+import { NewsCard } from '../../components/NewsCard'
 
 const Home = () => {
   const currentUser = useSelector((state: any) => state.users.currentUser)
@@ -27,8 +29,14 @@ const Home = () => {
   return (
     <Box>
       <HeaderResponsive links={links} />
-      <Container size={1200} className="home-page">
-        Hey
+      <Container size="md" className="home-page">
+        <Grid grow gutter="xs">
+          {news.map((item) => (
+            <Grid.Col sm={6} xs={12}>
+              <NewsCard {...item} />
+            </Grid.Col>
+          ))}
+        </Grid>
       </Container>
     </Box>
   )

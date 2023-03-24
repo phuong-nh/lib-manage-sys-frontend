@@ -1,0 +1,50 @@
+{
+  "news": [
+    {
+      "id": 1,
+      "image": "https://example.com/images/news1.jpg",
+      "link": "/news/1",
+      "title": "New Library Branch Opening",
+      "description": "We are excited to announce the opening of a new library branch in the city center...",
+      "author": {
+        "name": "Library Staff",
+        "image": "https://example.com/images/library_staff.jpg"
+      }
+    },
+    {
+      "id": 2,
+      "image": "https://example.com/images/news2.jpg",
+      "link": "/news/2",
+      "title": "Author Visit: Jane Doe",
+      "description": "Join us for a special evening with bestselling author Jane Doe as she discusses her latest novel...",
+      "author": {
+        "name": "Library Staff",
+        "image": "https://example.com/images/library_staff.jpg"
+      }
+    }
+  ],
+  "recommendedBooks": [
+    {
+      "id": 1,
+      "image": "https://example.com/images/great_novel.jpg",
+      "link": "/books/1",
+      "title": "The Great Novel",
+      "description": "A captivating story of love, adventure, and self-discovery.",
+      "author": {
+        "name": "John Smith",
+        "image": "https://example.com/images/john_smith.jpg"
+      }
+    },
+    {
+      "id": 2,
+      "image": "https://example.com/images/amazing_book.jpg",
+      "link": "/books/2",
+      "title": "Another Amazing Book",
+      "description": "A thrilling tale that will leave you on the edge of your seat.",
+      "author": {
+        "name": "Jane Johnson",
+        "image": "https://example.com/images/jane_johnson.jpg"
+      }
+    }
+  ]
+}
