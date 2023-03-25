@@ -1,28 +1,36 @@
 export interface Author {
-  givenName: string | null
-  surName: string | null
-  fullName: string
-  imgsrc: string | null
+  id: string;
+  givenName: string | null;
+  surName: string | null;
+  fullName: string;
+  imgsrc: string | null;
 }
 
 export interface Book {
-  ISBN: string
-  title: string
-  description: string
-  publisher: string
-  authors: Author[]
-  status: 'available' | 'borrowed'
-  borrowerEmail: string | null
-  publishedDate: string
-  borrowDate: string | null
-  returnDate: string | null
+  id: string;
+  ISBN: string;
+  title: string;
+  description: string;
+  publisher: string;
+  authors: Author[];
+  publishedDate: string;
+  copies: BookCopy[];
+}
+
+export interface BookCopy {
+  id: string;
+  status: 'available' | 'borrowed';
+  borrowerId: string | null;
+  borrowDate: string | null;
+  returnDate: string | null;
 }
 
 export interface User {
-  givenName: string | null
-  surName: string | null
-  fullName: string
-  email: string
-  role: 'user' | 'admin'
-  imgsrc: string | null
+  id: string;
+  givenName: string | null;
+  surName: string | null;
+  fullName: string;
+  email: string;
+  role: 'user' | 'admin';
+  imgsrc: string | null;
 }

@@ -5,16 +5,16 @@ import { User } from '../../types'
 import { GoogleLogin } from '@react-oauth/google'
 import jwt_decode from 'jwt-decode'
 import { AuthenticationForm } from '../../components/AuthenticationForm'
-import { Box, Container } from '@mantine/core'
+import { Box, Container, Space } from '@mantine/core'
 import { Navigate } from 'react-router'
 
 const Login = () => {
   const currentUser = useSelector((state: any) => state.users.currentUser)
 
   return (
-    <Box sx={{width: "100vw", height: "100vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
+    <Box sx={{display: "flex", justifyContent: "center", alignItems: "center"}}>
       {currentUser && <Navigate to="/" />}
-      <Container size="xs">
+      <Container size="xs" py="xl">
         <AuthenticationForm />
         <Box sx={{height: "20vh"}}/>
       </Container>

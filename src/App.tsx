@@ -1,35 +1,48 @@
-import React from 'react'
-import { Provider } from 'react-redux'
 import store from './store'
-import { Box, Button, MantineProvider } from '@mantine/core'
+import { MantineProvider } from '@mantine/core'
 import libraryTheme from './constant/theme'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home/Home'
 import NotFound from './pages/Error/NotFound'
 import Login from './pages/Login/Login'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import Search from './pages/Search/Search'
+import { HeaderResponsive } from './components/HeaderResponsive'
+import headerLinks from './utils/headerLinks'
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Home />,
-    errorElement: <NotFound />
-  },
-  {
-    path: '/login',
-    element: <Login />
-  }
-])
+
 
 const App = () => {
+  const links = headerLinks()
+
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <HeaderResponsive links={links} />,
+      errorElement: <NotFound />,
+      children: [
+        {
+          path: '/',
+          element: <Home />
+        },
+        {
+          path: '/login',
+          element: <Login />
+        },
+        {
+          path: '/search',
+          element: <Search />
+        }
+      ]
+    }
+  ])
+
   return (
-    <Provider store={store}>
-      <GoogleOAuthProvider clientId="907337911907-7gmbteqb7mirlhoor3ch3nlhsi6qhp59.apps.googleusercontent.com">
-        <MantineProvider theme={libraryTheme}>
-          <RouterProvider router={router} />
-        </MantineProvider>
-      </GoogleOAuthProvider>
-    </Provider>
+    <GoogleOAuthProvider clientId="907337911907-7gmbteqb7mirlhoor3ch3nlhsi6qhp59.apps.googleusercontent.com">
+      <MantineProvider theme={libraryTheme}>
+        <RouterProvider router={router} />
+      </MantineProvider>
+    </GoogleOAuthProvider>
   )
 }
 

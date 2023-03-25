@@ -45,6 +45,17 @@
         "name": "Jane Johnson",
         "image": "https://example.com/images/jane_johnson.jpg"
       }
+    },
+    {
+      "id": 3,
+      "image": "https://example.com/images/amazing_book.jpg",
+      "link": "/books/3",
+      "title": "Another Amazing Book",
+      "description": "A thrilling tale that will leave you on the edge of your seat.",
+      "author": {
+        "name": "Jane Johnson",
+        "image": "https://example.com/images/jane_johnson.jpg"
+      }
     }
   ]
 }

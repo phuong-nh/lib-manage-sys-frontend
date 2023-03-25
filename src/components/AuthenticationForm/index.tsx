@@ -18,6 +18,7 @@ import jwt_decode from 'jwt-decode'
 import { useDispatch, useSelector } from 'react-redux'
 import { User } from '../../types'
 import { addUser, setCurrentUser } from '../../features/users/slice'
+import hashCode from '../../utils/hashcode'
 
 export function AuthenticationForm(props: PaperProps) {
   const userList = useSelector((state: any) => state.users)
@@ -49,6 +50,7 @@ export function AuthenticationForm(props: PaperProps) {
     let userObj: any = jwt_decode(response.credential)
     console.log(userObj)
     let newUser: User = {
+      id: hashCode(userObj.email).toString(),
       givenName: userObj.given_name || null,
       surName: userObj.family_name || null,
       fullName: userObj.name,

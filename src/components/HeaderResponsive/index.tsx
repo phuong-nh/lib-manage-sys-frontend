@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   createStyles,
   Header,
@@ -14,6 +14,7 @@ import {
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useSelector } from 'react-redux'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 
 const HEADER_HEIGHT = rem(60)
 
@@ -21,6 +22,13 @@ const useStyles = createStyles((theme) => ({
   root: {
     position: 'relative',
     zIndex: 1
+  },
+
+  sticky: {
+    position: 'sticky',
+    top: 0,
+    backgroundColor: theme.colors.white, // Adjust the background color according to your design
+    zIndex: 1000,
   },
 
   dropdown: {
@@ -91,17 +99,22 @@ interface HeaderResponsiveProps {
 }
 
 export function HeaderResponsive({ links }: HeaderResponsiveProps) {
+  const location = useLocation();
   const [opened, { toggle, close }] = useDisclosure(false)
-  const [active, setActive] = useState(links[0].link)
+  const [active, setActive] = useState(location.pathname)
   const { classes, cx } = useStyles()
 
+  useEffect(() => {
+    setActive(location.pathname);
+  }, [location]);
+
   const items = links.map((link) => (
-    <a
+    <Link
       key={link.label}
-      href={link.link}
+      to={link.link}
       className={cx(classes.link, { [classes.linkActive]: active === link.link })}
       onClick={(event) => {
-        event.preventDefault()
+        // event.preventDefault()
         setActive(link.link)
         close()
       }}>
@@ -110,27 +123,30 @@ export function HeaderResponsive({ links }: HeaderResponsiveProps) {
         {link.icon && <Space w="sm" />}
         {link.label}
       </Box>
-    </a>
+    </Link>
   ))
 
   return (
-    <Header height={HEADER_HEIGHT} mb={120} className={classes.root}>
-      <Container className={classes.header}>
-        <Text size="xl">Library Management System</Text>
-        <Group spacing={5} className={classes.links}>
-          {items}
-        </Group>
+    <Box>
+      <Header height={HEADER_HEIGHT} className={cx(classes.root, classes.sticky)} sx={{ zIndex: 10 }}>
+        <Container className={classes.header}>
+          <Text size="xl">Library Management System</Text>
+          <Group spacing={5} className={classes.links}>
+            {items}
+          </Group>
 
-        <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
+          <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
 
-        <Transition transition="pop-top-right" duration={200} mounted={opened}>
-          {(styles) => (
-            <Paper className={classes.dropdown} withBorder style={styles}>
-              {items}
-            </Paper>
-          )}
-        </Transition>
-      </Container>
-    </Header>
+          <Transition transition="pop-top-right" duration={200} mounted={opened}>
+            {(styles) => (
+              <Paper className={classes.dropdown} withBorder style={styles}>
+                {items}
+              </Paper>
+            )}
+          </Transition>
+        </Container>
+      </Header>
+      <Outlet />
+    </Box>
   )
 }

@@ -1,17 +1,20 @@
-import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+import { getUsers } from '../../api'
+import { loadCurrentUser } from '../../api/localStorage/usersAPI'
 import { User } from '../../types'
-
-const initialState = {
-  users: [] as User[],
-  currentUser: null as User | null
-}
 
 const usersSlice = createSlice({
   name: 'users',
-  initialState,
+  initialState: {
+    users: getUsers(),
+    currentUser: loadCurrentUser()
+  },
   reducers: {
+    setUsers: (state, action: PayloadAction<User[]>) => {
+      state.users = action.payload
+    },
     addUser: (state, action: PayloadAction<User>) => {
-      if (state.users.findIndex((user: User) => user.email === action.payload.email) === -1)
+      if (state.users.findIndex((user: User) => user.id === action.payload.id) === -1)
         state.users.push(action.payload)
     },
     setCurrentUser: (state, action: PayloadAction<User>) => {
@@ -21,5 +24,5 @@ const usersSlice = createSlice({
   }
 })
 
-export const { addUser, setCurrentUser } = usersSlice.actions
+export const { addUser, setCurrentUser, setUsers } = usersSlice.actions
 export default usersSlice.reducer
