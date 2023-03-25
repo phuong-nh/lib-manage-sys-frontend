@@ -36,23 +36,31 @@ const Search = () => {
     }
   })
 
-  const handleSubmit = (values: { searchTerms: string }) => {
-    console.log(values)
-    setSearchParams(`value=${encodeURIComponent(values.searchTerms)}`)
+  const updateSearchResult = (searchTerms: string) => {
     setSearchResults(
       books.filter((book: any) => {
         return (
-          book.title.toLowerCase().includes(values.searchTerms.toLowerCase()) ||
+          book.title.toLowerCase().includes(searchTerms.toLowerCase()) ||
           book.authors
             .map((author: any) => author.fullName)
             .join(', ')
             .toLowerCase()
-            .includes(values.searchTerms.toLowerCase()) ||
-          book.ISBN.toLowerCase().includes(values.searchTerms.toLowerCase()) ||
-          book.description.toLowerCase().includes(values.searchTerms.toLowerCase())
+            .includes(searchTerms.toLowerCase()) ||
+          book.ISBN.toLowerCase().includes(searchTerms.toLowerCase()) ||
+          book.description.toLowerCase().includes(searchTerms.toLowerCase())
         )
       })
     )
+  }
+
+  useEffect(() => {
+    if (searchParams.get('value')) {
+      updateSearchResult(searchParams.get('value') || '')
+    }
+  }, [searchParams])
+
+  const handleSubmit = (values: { searchTerms: string }) => {
+    setSearchParams(`value=${encodeURIComponent(values.searchTerms)}`)
   }
 
   return (
