@@ -15,6 +15,7 @@ export interface Book {
   authors: Author[];
   publishedDate: string;
   copies: BookCopy[];
+  imgsrc: string | null;
 }
 
 export interface BookCopy {

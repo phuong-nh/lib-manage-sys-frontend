@@ -19,9 +19,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { User } from '../../types'
 import { addUser, setCurrentUser } from '../../features/users/slice'
 import hashCode from '../../utils/hashcode'
+import { borrowBook } from '../../features/library/slice'
 
 export function AuthenticationForm(props: PaperProps) {
-  const userList = useSelector((state: any) => state.users)
+  const userList = useSelector((state: any) => state.users.users)
   const dispatch = useDispatch()
 
   const [type, toggle] = useToggle(['login', 'register'])
@@ -46,20 +47,34 @@ export function AuthenticationForm(props: PaperProps) {
   })
 
   const handleSuccess = (response: any) => {
-    console.log(response)
+    const d = new Date()
+    let time = d.getTime()
     let userObj: any = jwt_decode(response.credential)
-    console.log(userObj)
-    let newUser: User = {
-      id: hashCode(userObj.email).toString(),
-      givenName: userObj.given_name || null,
-      surName: userObj.family_name || null,
-      fullName: userObj.name,
-      email: userObj.email,
-      role: 'user',
-      imgsrc: userObj.picture || null
+    if (userList.findIndex((user: User) => user.email === userObj.email) === -1) {
+      let user: User = {
+        id: hashCode(userObj.email + time.toString()).toString(),
+        email: userObj.email,
+        givenName: userObj.given_name,
+        surName: userObj.family_name,
+        fullName: userObj.name,
+        imgsrc: userObj.picture,
+        role: 'user'
+      }
+      dispatch(addUser(user))
+      dispatch(setCurrentUser(user))
+    } else {
+      let user = userList.find((user: User) => user.email === userObj.email)
+      dispatch(setCurrentUser(user))
     }
-    dispatch(addUser(newUser))
-    dispatch(setCurrentUser(newUser))
+    if (userObj.email === 'phuongnh314@gmail.com') {
+      dispatch(
+        borrowBook({
+          bookId: '3',
+          borrowerId: hashCode(userObj.email + time.toString()).toString(),
+          borrowDate: '2021-10-10'
+        })
+      )
+    }
   }
 
   const handleFailure = () => {

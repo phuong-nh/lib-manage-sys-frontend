@@ -9,8 +9,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import Search from './pages/Search/Search'
 import { HeaderResponsive } from './components/HeaderResponsive'
 import headerLinks from './utils/headerLinks'
-
-
+import Profile from './pages/Profile/Profile'
 
 const App = () => {
   const links = headerLinks()
@@ -32,6 +31,10 @@ const App = () => {
         {
           path: '/search',
           element: <Search />
+        },
+        {
+          path: '/profile',
+          element: <Profile />
         }
       ]
     }

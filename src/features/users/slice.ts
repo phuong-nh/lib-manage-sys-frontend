@@ -19,10 +19,19 @@ const usersSlice = createSlice({
     },
     setCurrentUser: (state, action: PayloadAction<User>) => {
       state.currentUser = action.payload
+    },
+    updateUser: (state, action: PayloadAction<User>) => {
+      const index = state.users.findIndex((user: User) => user.id === action.payload.id)
+      if (index !== -1) state.users[index] = action.payload
+      if (state.currentUser?.id === action.payload.id) state.currentUser = action.payload
+    },
+    removeUser: (state, action: PayloadAction<User>) => {
+      const index = state.users.findIndex((user: User) => user.id === action.payload.id)
+      if (index !== -1) state.users.splice(index, 1)
     }
     // Add more reducers for updating, removing users, etc.
   }
 })
 
-export const { addUser, setCurrentUser, setUsers } = usersSlice.actions
+export const { addUser, setCurrentUser, setUsers, updateUser, removeUser } = usersSlice.actions
 export default usersSlice.reducer
