@@ -1,4 +1,14 @@
-import { Box, Button, Container, Divider, Group, Stack, TextInput, Title } from '@mantine/core'
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Group,
+  Pagination,
+  Stack,
+  TextInput,
+  Title
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,6 +26,7 @@ const Search = () => {
   const [searchResults, setSearchResults] = useState<any>(books)
   let [searchParams, setSearchParams] = useSearchParams()
   const dispatch = useDispatch()
+  const [searchPage, setSearchPage] = useState(1)
   const currentUser = useSelector((state: any) => state.users.currentUser)
 
   const form = useForm({
@@ -35,6 +46,14 @@ const Search = () => {
       }
     }
   })
+
+  const getSearchList = (page: number) => {
+    if (page === (searchResults.length - 1) / 10 + 1) {
+      return searchResults.slice((page - 1) * 10, searchResults.length)
+    } else {
+      return searchResults.slice((page - 1) * 10, page * 10)
+    }
+  }
 
   const updateSearchResult = (searchTerms: string) => {
     setSearchResults(
@@ -95,7 +114,7 @@ const Search = () => {
           <Title order={2} my="xs">
             Results:
           </Title>
-          {searchResults.map((book: any) => (
+          {getSearchList(searchPage).map((book: any) => (
             <SearchCard
               key={book.id}
               book={book}
@@ -128,6 +147,15 @@ const Search = () => {
               }
             />
           ))}
+
+          <Group position="right">
+            <Pagination
+              total={searchResults.length / 5 + 1}
+              onChange={(value) => {
+                setSearchPage(value)
+              }}
+            />
+          </Group>
         </Box>
       </Container>
     </Box>

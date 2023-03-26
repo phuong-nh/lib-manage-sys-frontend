@@ -11,25 +11,33 @@ const usersSlice = createSlice({
   },
   reducers: {
     setUsers: (state, action: PayloadAction<User[]>) => {
-      state.users = action.payload
+      return { users: action.payload, currentUser: state.currentUser }
     },
     addUser: (state, action: PayloadAction<User>) => {
       if (state.users.findIndex((user: User) => user.id === action.payload.id) === -1)
-        state.users.push(action.payload)
+        return { users: [...state.users, action.payload], currentUser: state.currentUser }
     },
     setCurrentUser: (state, action: PayloadAction<User>) => {
-      state.currentUser = action.payload
+      return { users: state.users, currentUser: action.payload }
     },
     updateUser: (state, action: PayloadAction<User>) => {
       const index = state.users.findIndex((user: User) => user.id === action.payload.id)
-      if (index !== -1) state.users[index] = action.payload
-      if (state.currentUser?.id === action.payload.id) state.currentUser = action.payload
+      if (index !== -1)
+        return {
+          users: [...state.users.slice(0, index), action.payload, ...state.users.slice(index + 1)],
+          currentUser: state.currentUser
+        }
+      if (state.currentUser?.id === action.payload.id)
+        return { users: state.users, currentUser: action.payload }
     },
     removeUser: (state, action: PayloadAction<User>) => {
       const index = state.users.findIndex((user: User) => user.id === action.payload.id)
-      if (index !== -1) state.users.splice(index, 1)
+      if (index !== -1)
+        return {
+          users: [...state.users.slice(0, index), ...state.users.slice(index + 1)],
+          currentUser: state.currentUser
+        }
     }
-    // Add more reducers for updating, removing users, etc.
   }
 })
 

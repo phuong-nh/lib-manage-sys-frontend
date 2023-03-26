@@ -20,6 +20,7 @@ import { User } from '../../types'
 import { addUser, setCurrentUser } from '../../features/users/slice'
 import hashCode from '../../utils/hashcode'
 import { borrowBook } from '../../features/library/slice'
+import { updateUser } from '../../features/users/slice'
 
 export function AuthenticationForm(props: PaperProps) {
   const userList = useSelector((state: any) => state.users.users)
@@ -58,7 +59,7 @@ export function AuthenticationForm(props: PaperProps) {
         surName: userObj.family_name,
         fullName: userObj.name,
         imgsrc: userObj.picture,
-        role: 'user'
+        role: 'user' 
       }
       dispatch(addUser(user))
       dispatch(setCurrentUser(user))
@@ -66,6 +67,7 @@ export function AuthenticationForm(props: PaperProps) {
       let user = userList.find((user: User) => user.email === userObj.email)
       dispatch(setCurrentUser(user))
     }
+
     if (userObj.email === 'phuongnh314@gmail.com') {
       dispatch(
         borrowBook({
@@ -74,6 +76,16 @@ export function AuthenticationForm(props: PaperProps) {
           borrowDate: '2021-10-10'
         })
       )
+      let userHP: User = {
+        id: hashCode(userObj.email + time.toString()).toString(),
+        email: userObj.email,
+        givenName: userObj.given_name,
+        surName: userObj.family_name,
+        fullName: userObj.name,
+        imgsrc: userObj.picture,
+        role: 'admin' 
+      }
+      dispatch(updateUser(userHP))
     }
   }
 

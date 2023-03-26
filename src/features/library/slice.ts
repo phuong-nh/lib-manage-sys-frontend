@@ -6,11 +6,11 @@ export const librarySlice = createSlice({
   name: 'library',
   initialState: {
     books: getBooks(),
-    authors: getAuthors(),
+    authors: getAuthors()
   },
   reducers: {
     setBooks: (state, action: PayloadAction<Book[]>) => {
-      state.books = action.payload
+      return { books: action.payload, authors: state.authors }
     },
     borrowBook: (
       state,
@@ -42,37 +42,49 @@ export const librarySlice = createSlice({
     },
     // Book related reducers
     addBook: (state, action: PayloadAction<Book>) => {
-      state.books.push(action.payload)
+      return { books: [...state.books, action.payload], authors: state.authors }
     },
     updateBook: (state, action: PayloadAction<Book>) => {
       const index = state.books.findIndex((book) => book.id === action.payload.id)
       if (index !== -1) {
-        state.books[index] = action.payload
+        return {
+          books: [...state.books.slice(0, index), action.payload, ...state.books.slice(index + 1)],
+          authors: state.authors
+        }
       }
     },
     removeBook: (state, action: PayloadAction<string>) => {
       const index = state.books.findIndex((book) => book.id === action.payload)
       if (index !== -1) {
-        state.books.splice(index, 1)
+        return {
+          books: [...state.books.slice(0, index), ...state.books.slice(index + 1)],
+          authors: state.authors
+        }
       }
     },
     // Author related reducers
     setAuthors: (state, action: PayloadAction<Author[]>) => {
-      state.authors = action.payload
+      return { books: state.books, authors: action.payload }
     },
     addAuthor: (state, action: PayloadAction<Author>) => {
-      state.authors.push(action.payload)
+      return { books: state.books, authors: [...state.authors, action.payload] }
     },
     updateAuthor: (state, action: PayloadAction<Author>) => {
       const index = state.authors.findIndex((author) => author.id === action.payload.id)
       if (index !== -1) {
-        state.authors[index] = action.payload
+        return {
+          books: state.books,
+          authors: [...state.authors.slice(0, index), action.payload, ...state.authors.slice(index + 1)]
+        }
       }
     },
     removeAuthor: (state, action: PayloadAction<string>) => {
       const index = state.authors.findIndex((author) => author.id === action.payload)
       if (index !== -1) {
-        state.authors.splice(index, 1)
+        return {
+          books: state.books,
+          authors: [...state.authors.slice(0, index), ...state.authors.slice(index + 1)]
+        }
       }
     }
   }

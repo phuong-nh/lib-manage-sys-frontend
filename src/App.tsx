@@ -10,6 +10,7 @@ import Search from './pages/Search/Search'
 import { HeaderResponsive } from './components/HeaderResponsive'
 import headerLinks from './utils/headerLinks'
 import Profile from './pages/Profile/Profile'
+import Admin from './pages/Admin/Admin'
 
 const App = () => {
   const links = headerLinks()
@@ -35,6 +36,10 @@ const App = () => {
         {
           path: '/profile',
           element: <Profile />
+        },
+        {
+          path: '/admin',
+          element: <Admin />
         }
       ]
     }

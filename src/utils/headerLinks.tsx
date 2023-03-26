@@ -9,19 +9,20 @@ function headerLinks() {
     { label: 'Search', link: '/search', icon: null }
   ]
 
-  if (currentUser && currentUser.role === 'admin') {
-    links.push({ label: 'Admin', link: '/admin', icon: null })
-  }
-
   if (currentUser) {
     links.push({
       label: 'Profile',
       link: '/profile',
       icon: () => <Avatar src={currentUser.imgsrc} radius="xl" size="sm" />
     })
+    if (currentUser.role === 'admin') {
+      links.push({ label: 'Admin', link: '/admin', icon: null })
+    }
+    return links
   } else {
     links.push({ label: 'Login', link: '/login', icon: null })
   }
+
   return links
 }
 
