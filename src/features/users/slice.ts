@@ -23,12 +23,24 @@ const usersSlice = createSlice({
     updateUser: (state, action: PayloadAction<User>) => {
       const index = state.users.findIndex((user: User) => user.id === action.payload.id)
       if (index !== -1)
-        return {
-          users: [...state.users.slice(0, index), action.payload, ...state.users.slice(index + 1)],
-          currentUser: state.currentUser
-        }
-      if (state.currentUser?.id === action.payload.id)
-        return { users: state.users, currentUser: action.payload }
+        if (state.currentUser?.id === action.payload.id)
+          return {
+            users: [
+              ...state.users.slice(0, index),
+              action.payload,
+              ...state.users.slice(index + 1)
+            ],
+            currentUser: action.payload
+          }
+        else
+          return {
+            users: [
+              ...state.users.slice(0, index),
+              action.payload,
+              ...state.users.slice(index + 1)
+            ],
+            currentUser: state.currentUser
+          }
     },
     removeUser: (state, action: PayloadAction<User>) => {
       const index = state.users.findIndex((user: User) => user.id === action.payload.id)
