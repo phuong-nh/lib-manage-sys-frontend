@@ -1,29 +1,27 @@
-import React, { useState } from 'react'
+import { Box, Button, Checkbox, Group, Stack, Switch, TextInput, Title } from '@mantine/core'
+import { useForm } from '@mantine/form'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { User } from '../../types'
-import { useForm } from '@mantine/form'
-import { Box, Checkbox, Stack, Group, TextInput, Button, Switch } from '@mantine/core'
-import generateId from '../../utils/generateId'
-import { addUser } from '../../features/users/slice'
-import { Navigate } from 'react-router'
 
-interface AddUserModalProps {
+interface EditUserModalProps {
+  user: User,
   onFinish: () => void
 }
 
-const addUserModal: React.FC<AddUserModalProps> = ({ onFinish }) => {
+const EditUserModal: React.FC<EditUserModalProps> = ({ user, onFinish }) => {
   const [isFullNameEditable, setIsFullNameEditable] = useState(true)
   const userList = useSelector((state: any) => state.users.users)
   const dispatch = useDispatch()
 
   const form = useForm({
     initialValues: {
-      givenName: '',
-      surName: '',
-      fullName: '',
-      email: '',
-      imgsrc: '',
-      isAdmin: false
+      givenName: user.givenName,
+      surName: user.surName,
+      fullName: user.fullName,
+      email: user.email,
+      imgsrc: user.imgsrc,
+      isAdmin: user.role === 'admin'
     },
     validate: {
       fullName: (value) => {
@@ -32,7 +30,7 @@ const addUserModal: React.FC<AddUserModalProps> = ({ onFinish }) => {
       },
       email: (val) => {
         if (/^\S+@\S+$/.test(val) == false) return 'Invalid email'
-        if (userList.findIndex((user: User) => user.email === val) !== -1)
+        if (userList.findIndex((user: User) => user.email === val) !== -1 && val !== user.email)
           return 'Email already exists'
         return null
       },
@@ -58,8 +56,8 @@ const addUserModal: React.FC<AddUserModalProps> = ({ onFinish }) => {
     } else {
       values.fullName = `${values.givenName} ${values.surName}`
     }
-    const newUser: User = {
-      id: generateId(values.email),
+    const updatedUser: User = {
+      ...user,
       givenName: values.givenName,
       surName: values.surName,
       fullName: values.fullName,
@@ -67,7 +65,7 @@ const addUserModal: React.FC<AddUserModalProps> = ({ onFinish }) => {
       imgsrc: values.imgsrc,
       role: values.isAdmin ? 'admin' : 'user'
     }
-    dispatch(addUser(newUser))
+    dispatch({ type: 'users/updateUser', payload: updatedUser })
     onFinish()
   }
 
@@ -119,4 +117,4 @@ const addUserModal: React.FC<AddUserModalProps> = ({ onFinish }) => {
   )
 }
 
-export default addUserModal
+export default EditUserModal

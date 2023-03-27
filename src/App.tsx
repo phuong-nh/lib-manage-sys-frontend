@@ -11,6 +11,7 @@ import { HeaderResponsive } from './components/HeaderResponsive'
 import headerLinks from './utils/headerLinks'
 import Profile from './pages/Profile/Profile'
 import Admin from './pages/Admin/Admin'
+import { ModalsProvider } from '@mantine/modals'
 
 const App = () => {
   const links = headerLinks()
@@ -48,7 +49,9 @@ const App = () => {
   return (
     <GoogleOAuthProvider clientId="907337911907-7gmbteqb7mirlhoor3ch3nlhsi6qhp59.apps.googleusercontent.com">
       <MantineProvider theme={libraryTheme}>
-        <RouterProvider router={router} />
+        <ModalsProvider>
+          <RouterProvider router={router} />
+        </ModalsProvider>
       </MantineProvider>
     </GoogleOAuthProvider>
   )
