@@ -1,5 +1,6 @@
 import { Box, Container, Divider, Title } from "@mantine/core"
 import { useSelector } from "react-redux"
+import { Navigate } from "react-router"
 import UserInfo from "../../components/OwnUserInfo"
 import UserLoans from "../../components/UserLoans"
 
@@ -8,6 +9,7 @@ const Profile = () => {
 
   return (
     <Box>
+      {(currentUser !== null) || <Navigate to="/" />}
       <Container size="md" my="xl">
         <Title order={1}>Profile</Title>
         <UserInfo user={currentUser}/>

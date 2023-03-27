@@ -74,7 +74,11 @@ export const librarySlice = createSlice({
       if (index !== -1) {
         return {
           books: state.books,
-          authors: [...state.authors.slice(0, index), action.payload, ...state.authors.slice(index + 1)]
+          authors: [
+            ...state.authors.slice(0, index),
+            action.payload,
+            ...state.authors.slice(index + 1)
+          ]
         }
       }
     },
@@ -82,7 +86,10 @@ export const librarySlice = createSlice({
       const index = state.authors.findIndex((author) => author.id === action.payload)
       if (index !== -1) {
         return {
-          books: state.books,
+          books: state.books.map((book) => ({
+            ...book,
+            authors: book.authors.filter((author) => author.id !== action.payload)
+          })),
           authors: [...state.authors.slice(0, index), ...state.authors.slice(index + 1)]
         }
       }

@@ -2,6 +2,8 @@ import { Box, Button, Checkbox, Group, Stack, TextInput, Title } from '@mantine/
 import { useForm } from '@mantine/form'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router'
+import { logout } from '../../features/users/slice'
 import { User } from '../../types'
 
 interface OwnUserInfoProps {
@@ -13,6 +15,7 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user, disabled }) => {
   const [isFullNameEditable, setIsFullNameEditable] = useState(true)
   const userList = useSelector((state: any) => state.users.users)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const form = useForm({
     initialValues: {
@@ -61,6 +64,16 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user, disabled }) => {
 
   return (
     <Box py="xl">
+      <Group position="right">
+        <Button
+          color="red"
+          onClick={() => {
+            dispatch(logout())
+            navigate('/')
+          }}>
+          Log out
+        </Button>
+      </Group>
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
           <Checkbox

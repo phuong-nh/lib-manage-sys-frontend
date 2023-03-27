@@ -47,11 +47,14 @@ const usersSlice = createSlice({
       if (index !== -1)
         return {
           users: [...state.users.slice(0, index), ...state.users.slice(index + 1)],
-          currentUser: state.currentUser
+          currentUser: action.payload.id === state.currentUser?.id ? null : state.currentUser
         }
+    },
+    logout: (state) => {
+      return { users: state.users, currentUser: null }
     }
   }
 })
 
-export const { addUser, setCurrentUser, setUsers, updateUser, removeUser } = usersSlice.actions
+export const { addUser, setCurrentUser, setUsers, updateUser, removeUser, logout} = usersSlice.actions
 export default usersSlice.reducer

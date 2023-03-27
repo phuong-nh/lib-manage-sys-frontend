@@ -22,10 +22,14 @@ import { AddUserModal } from '../../components/AdminDataMod'
 import UserSection from './UserSection'
 import BookSection from './BookSection'
 import AuthorSection from './AuthorSection'
+import { Navigate } from 'react-router'
 
 const Admin = () => {
+  const currentUser = useSelector((state: any) => state.users.currentUser)
+
   return (
     <Box>
+      {(currentUser && currentUser.role === 'admin') || <Navigate to="/" />}
       <Container size="lg" my="xl">
         <Title order={1}>Admin</Title>
         <Group>

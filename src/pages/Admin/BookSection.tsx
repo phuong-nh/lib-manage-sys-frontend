@@ -16,15 +16,17 @@ import {
   Title,
   Text
 } from '@mantine/core'
-import { IconEdit } from '@tabler/icons-react'
+import { IconEdit, IconX } from '@tabler/icons-react'
 import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
 import { AddBookModal, EditBookModal } from '../../components/AdminDataMod'
+import { removeBook } from '../../features/library/slice'
 
 const BookSection = () => {
   const books = useSelector((state: any) => state.library.books)
   const [bookList, setBookList] = useState(books)
   const [bookPage, setBookPage] = useState(1)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setBookList(books)
@@ -67,6 +69,7 @@ const BookSection = () => {
             <th>Published</th>
             <th>Available</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -89,6 +92,13 @@ const BookSection = () => {
                     })
                   }}>
                   <IconEdit />
+                </ActionIcon>
+              </td>
+              <td width={'1em'}>
+                <ActionIcon onClick={() => {
+                  dispatch(removeBook(book.id))
+                }}>
+                  <IconX />
                 </ActionIcon>
               </td>
             </tr>

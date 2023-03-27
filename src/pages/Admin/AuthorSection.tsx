@@ -10,16 +10,18 @@ import {
   Text
 } from '@mantine/core'
 import { modals } from '@mantine/modals'
-import { IconEdit } from '@tabler/icons-react'
+import { IconEdit, IconX } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { AddAuthorModal, EditAuthorModal } from '../../components/AdminDataMod'
+import { removeAuthor } from '../../features/library/slice'
 import { Author } from '../../types'
 
 const AuthorSection = () => {
   const authors = useSelector((state: any) => state.library.authors)
   const [authorList, setAuthorList] = useState(authors)
   const [authorPage, setAuthorPage] = useState(1)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setAuthorList(authors)
@@ -50,6 +52,7 @@ const AuthorSection = () => {
             <th>First Name</th>
             <th>Last Name</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -66,6 +69,14 @@ const AuthorSection = () => {
                     })
                   }}>
                   <IconEdit />
+                </ActionIcon>
+              </td>
+              <td width={'1em'}>
+                <ActionIcon
+                  onClick={() => {
+                    dispatch(removeAuthor(author.id))
+                  }}>
+                  <IconX />
                 </ActionIcon>
               </td>
             </tr>

@@ -17,14 +17,16 @@ import {
   Text
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IconEdit } from '@tabler/icons-react'
+import { IconEdit, IconX } from '@tabler/icons-react'
 import { AddUserModal, EditUserModal } from '../../components/AdminDataMod'
 import { modals } from '@mantine/modals'
+import { removeUser } from '../../features/users/slice'
 
 const UserSection = () => {
   const users = useSelector((state: any) => state.users.users)
   const [userList, setUserList] = useState(users)
   const [userPage, setUserPage] = useState(1)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setUserList(users)
@@ -60,6 +62,7 @@ const UserSection = () => {
             <th>Email</th>
             <th>Role</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -78,6 +81,13 @@ const UserSection = () => {
                     })
                   }}>
                   <IconEdit />
+                </ActionIcon>
+              </td>
+              <td width={'1em'}>
+                <ActionIcon onClick={() => {
+                  dispatch(removeUser(user))
+                }}>
+                  <IconX />
                 </ActionIcon>
               </td>
             </tr>

@@ -17,7 +17,8 @@ const actionsToWatch = [
   'users/updateUser',
   'users/addUser',
   'users/setCurrentUser',
-
+  'users/removeUser',
+  'users/logout'
   // Add other actions that modify data here
 ]
 
