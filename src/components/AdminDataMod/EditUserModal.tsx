@@ -116,7 +116,12 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onFinish }) => {
           </Group>
           <TextInput label="Email" placeholder="Email" required {...form.getInputProps('email')} />
           <TextInput label="Image URL" placeholder="Image URL" {...form.getInputProps('imgsrc')} />
-          <Switch label="Admin" my="sm" {...form.getInputProps('isAdmin')} />
+          <Switch
+            label="Admin"
+            my="sm"
+            {...form.getInputProps('isAdmin')}
+            checked={form.getInputProps('isAdmin').value}
+          />
           <Group position="right">
             <Button type="submit">Save</Button>
           </Group>

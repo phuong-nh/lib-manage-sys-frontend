@@ -14,7 +14,7 @@ export const mockContent: Content[] = [
                 <li><strong>Exploring the Cosmos</strong> by Sarah Davis</li>
               </ol>
               <p>Visit our library to borrow these amazing new books today!</p>`,
-    date: new Date().toISOString(),
+    date: new Date().toISOString().slice(0, 10),
     showOnHomePage: true,
     author: 'Dungeon Master'
   },
@@ -29,7 +29,7 @@ export const mockContent: Content[] = [
                 <li>Sunday: Closed</li>
               </ul>
               <p>Visit our library to borrow these amazing new books today!</p>`,
-    date: new Date().toISOString(),
+    date: new Date().toISOString().slice(0, 10),
     showOnHomePage: true,
     author: 'Jessica'
   }

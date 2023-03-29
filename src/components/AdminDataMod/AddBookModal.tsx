@@ -136,7 +136,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ onFinish }) => {
       authors: values.authors
         .map((authorId: string) => authors.find((author: Author) => author.id === authorId))
         .filter((author: Author | undefined): author is Author => Boolean(author)),
-      imgsrc: values.imgsrc
+      imgsrc: values.imgsrc || undefined
     }
     dispatch({ type: 'library/addBook', payload: newBook })
     onFinish()

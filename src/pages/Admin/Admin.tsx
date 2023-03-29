@@ -5,6 +5,7 @@ import { Navigate } from 'react-router'
 import UserSection from './UserSection'
 import BookSection from './BookSection'
 import AuthorSection from './AuthorSection'
+import ContentSection from './ContentSection'
 import { RootState } from '../../store'
 
 const Admin = () => {
@@ -23,6 +24,8 @@ const Admin = () => {
         <BookSection />
         <Divider />
         <AuthorSection />
+        <Divider />
+        <ContentSection />
       </Container>
     </Box>
   )
