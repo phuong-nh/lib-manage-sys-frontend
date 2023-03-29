@@ -1,16 +1,11 @@
-import React from 'react'
-import { Avatar, Box, Container, Divider, Grid, Space, Text, Title } from '@mantine/core'
-import { HeaderResponsive } from '../../components/HeaderResponsive'
-import { useSelector } from 'react-redux'
+import { Box, Container, Divider, Grid, Space, Title } from '@mantine/core'
+
 import { news, recommendedBooks } from '../../api/mock'
 import { NewsCard } from '../../components/NewsCard'
 import { BookRecommendationCard } from '../../components/BookRecommendationCard'
 import { SearchHero } from '../../components/SearchHero'
-import headerLinks from '../../utils/headerLinks'
 
 const Home = () => {
-  let links: { label: string; link: string; icon: React.FC | null} [] = headerLinks()
-
   return (
     <Box>
       <SearchHero />

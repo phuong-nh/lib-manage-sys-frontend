@@ -1,7 +1,8 @@
-import { Box, Button, Card, Center, Group, Space, Title, Text } from '@mantine/core'
+import { Box, Button, } from '@mantine/core'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { returnBook } from '../../features/library/slice'
-import { Author, Book, User } from '../../types'
+import { Book, User } from '../../types'
 import BookOverviewCard from '../BookOverviewCard'
 
 interface UserLoansProps {

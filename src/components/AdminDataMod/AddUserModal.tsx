@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { User } from '../../types'
 import { useForm } from '@mantine/form'
 import { Box, Checkbox, Stack, Group, TextInput, Button, Switch } from '@mantine/core'
+
+import { User } from '../../types'
 import generateId from '../../utils/generateId'
 import { addUser } from '../../features/users/slice'
-import { Navigate } from 'react-router'
 
 interface AddUserModalProps {
   onFinish: () => void

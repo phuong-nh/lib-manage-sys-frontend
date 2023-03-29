@@ -13,7 +13,6 @@ import {
   Space
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { useSelector } from 'react-redux'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
 const HEADER_HEIGHT = rem(60)

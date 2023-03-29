@@ -1,9 +1,9 @@
-import { Box, Button, Checkbox, Group, Stack, Switch, TextInput } from '@mantine/core'
+import { Box, Button, Checkbox, Group, Stack, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
+
 import { Author, User } from '../../types'
-import generateId from '../../utils/generateId'
 
 interface EditAuthorModalProps {
   onFinish: () => void

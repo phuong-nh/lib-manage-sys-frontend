@@ -1,4 +1,5 @@
-import { createAsyncThunk, createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import { getUsers } from '../../api'
 import { loadCurrentUser } from '../../api/localStorage/usersAPI'
 import { User } from '../../types'

@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
+
 import { saveDataOnChange } from '../api/middleware/saveDataOnChange'
 import rootReducer from './rootReducer'
 // ...

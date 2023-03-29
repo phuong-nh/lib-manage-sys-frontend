@@ -1,8 +1,9 @@
-import { Box, Button, Checkbox, Group, Stack, TextInput, Title } from '@mantine/core'
+import { Box, Button, Checkbox, Group, Stack, TextInput} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
+
 import { logout } from '../../features/users/slice'
 import { User } from '../../types'
 

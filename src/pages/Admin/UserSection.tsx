@@ -1,26 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { User } from '../../types'
-import { useForm } from '@mantine/form'
+import { modals } from '@mantine/modals'
 import {
-  Box,
-  Checkbox,
   Stack,
   Group,
   TextInput,
   Button,
-  Switch,
   Title,
   Table,
   ActionIcon,
   Pagination,
   Text
 } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
 import { IconEdit, IconX } from '@tabler/icons-react'
+
 import { AddUserModal, EditUserModal } from '../../components/AdminDataMod'
-import { modals } from '@mantine/modals'
 import { removeUser } from '../../features/users/slice'
+import { User } from '../../types'
 
 const UserSection = () => {
   const users = useSelector((state: any) => state.users.users)

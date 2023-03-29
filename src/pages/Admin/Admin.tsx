@@ -1,28 +1,17 @@
 import {
-  ActionIcon,
   Box,
-  Button,
   Container,
   Divider,
   Group,
-  Modal,
-  Pagination,
-  Stack,
-  Table,
   Text,
-  TextInput,
   Title
 } from '@mantine/core'
 import { useSelector } from 'react-redux'
-import { Author, Book, User } from '../../types'
-import { IconEdit, IconPlus } from '@tabler/icons-react'
-import { useDisclosure, usePagination } from '@mantine/hooks'
-import { useEffect, useState } from 'react'
-import { AddUserModal } from '../../components/AdminDataMod'
+import { Navigate } from 'react-router'
+
 import UserSection from './UserSection'
 import BookSection from './BookSection'
 import AuthorSection from './AuthorSection'
-import { Navigate } from 'react-router'
 
 const Admin = () => {
   const currentUser = useSelector((state: any) => state.users.currentUser)

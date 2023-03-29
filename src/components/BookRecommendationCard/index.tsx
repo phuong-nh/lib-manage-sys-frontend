@@ -1,10 +1,7 @@
-import { IconBookmark, IconHeart, IconShare } from '@tabler/icons-react'
 import {
   Card,
   Image,
   Text,
-  ActionIcon,
-  Badge,
   Group,
   Center,
   Avatar,

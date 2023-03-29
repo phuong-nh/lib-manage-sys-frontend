@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Author, Book } from '../../types'
-import { useForm } from '@mantine/form'
 import {
-  Box,
-  Checkbox,
   Stack,
   Group,
   TextInput,
   Button,
-  Switch,
   ActionIcon,
   Pagination,
   Table,
@@ -17,10 +12,11 @@ import {
   Text
 } from '@mantine/core'
 import { IconEdit, IconX } from '@tabler/icons-react'
-import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@mantine/modals'
+
 import { AddBookModal, EditBookModal } from '../../components/AdminDataMod'
 import { removeBook } from '../../features/library/slice'
+import { Author, Book } from '../../types'
 
 const BookSection = () => {
   const books = useSelector((state: any) => state.library.books)

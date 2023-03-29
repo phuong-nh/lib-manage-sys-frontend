@@ -1,7 +1,8 @@
-import { Box, Button, Checkbox, Group, Stack, Switch, TextInput, Title } from '@mantine/core'
+import { Box, Button, Checkbox, Group, Stack, Switch, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { updateUser } from '../../features/users/slice'
 import { User } from '../../types'
 
 interface EditUserModalProps {
@@ -65,7 +66,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onFinish }) => {
       imgsrc: values.imgsrc,
       role: values.isAdmin ? 'admin' : 'user'
     }
-    dispatch({ type: 'users/updateUser', payload: updatedUser })
+    dispatch(updateUser(updatedUser))
     onFinish()
   }
 

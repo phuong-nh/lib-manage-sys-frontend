@@ -13,9 +13,10 @@ import {
   Anchor,
   Stack
 } from '@mantine/core'
-import { GoogleOAuthProvider, useGoogleLogin, GoogleLogin } from '@react-oauth/google'
+import { GoogleLogin } from '@react-oauth/google'
 import jwt_decode from 'jwt-decode'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { User } from '../../types'
 import { addUser, setCurrentUser } from '../../features/users/slice'
 import hashCode from '../../utils/hashcode'

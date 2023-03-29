@@ -1,17 +1,17 @@
-import store from './store'
 import { MantineProvider } from '@mantine/core'
-import libraryTheme from './constant/theme'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+import { ModalsProvider } from '@mantine/modals'
+
+import libraryTheme from './constant/theme'
 import Home from './pages/Home/Home'
 import NotFound from './pages/Error/NotFound'
 import Login from './pages/Login/Login'
-import { GoogleOAuthProvider } from '@react-oauth/google'
 import Search from './pages/Search/Search'
 import { HeaderResponsive } from './components/HeaderResponsive'
 import headerLinks from './utils/headerLinks'
 import Profile from './pages/Profile/Profile'
 import Admin from './pages/Admin/Admin'
-import { ModalsProvider } from '@mantine/modals'
 
 const App = () => {
   const links = headerLinks()

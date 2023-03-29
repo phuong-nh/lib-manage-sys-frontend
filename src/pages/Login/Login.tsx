@@ -1,12 +1,8 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setCurrentUser } from '../../features/users/slice'
-import { User } from '../../types'
-import { GoogleLogin } from '@react-oauth/google'
-import jwt_decode from 'jwt-decode'
-import { AuthenticationForm } from '../../components/AuthenticationForm'
-import { Box, Container, Space } from '@mantine/core'
+import { useSelector } from 'react-redux'
+import { Box, Container } from '@mantine/core'
 import { Navigate } from 'react-router'
+
+import { AuthenticationForm } from '../../components/AuthenticationForm'
 
 const Login = () => {
   const currentUser = useSelector((state: any) => state.users.currentUser)

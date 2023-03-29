@@ -1,6 +1,7 @@
 import { Box, Container, Divider, Title } from "@mantine/core"
 import { useSelector } from "react-redux"
 import { Navigate } from "react-router"
+
 import UserInfo from "../../components/OwnUserInfo"
 import UserLoans from "../../components/UserLoans"
 

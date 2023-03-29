@@ -1,15 +1,14 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { Author, Book, BookCopy, User } from '../../types'
 import { useForm } from '@mantine/form'
 import {
   Box,
-  Checkbox,
   Stack,
   Group,
   TextInput,
   Button,
-  Switch,
   Textarea,
   NumberInput,
   MultiSelect,
@@ -20,9 +19,6 @@ import {
   rem
 } from '@mantine/core'
 import generateId from '../../utils/generateId'
-import { addUser } from '../../features/users/slice'
-import { Navigate } from 'react-router'
-import { addBook } from '../../api'
 
 interface AddBookModalProps {
   onFinish: () => void
