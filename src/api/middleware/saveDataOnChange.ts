@@ -3,6 +3,7 @@ import { saveBooks } from '../localStorage/booksAPI'
 import { saveAuthors } from '../localStorage/authorsAPI'
 import { saveCurrentUser, saveUsers } from '../localStorage/usersAPI'
 import { RootState } from '../../store'
+import { saveContent } from '../localStorage/contentAPI'
 
 const actionsToWatch = [
   'library/setBooks',
@@ -18,7 +19,11 @@ const actionsToWatch = [
   'users/addUser',
   'users/setCurrentUser',
   'users/removeUser',
-  'users/logout'
+  'users/logout',
+  'content/setContent',
+  'content/addContent',
+  'content/updateContent',
+  'content/removeContent'
   // Add other actions that modify data here
 ]
 
@@ -35,6 +40,7 @@ export const saveDataOnChange: Middleware = (storeAPI) => (next) => (action) => 
     saveAuthors(state.library.authors)
     saveUsers(state.users.users)
     saveCurrentUser(state.users.currentUser)
+    saveContent(state.contents)
   }
 
   return result

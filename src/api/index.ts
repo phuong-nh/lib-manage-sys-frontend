@@ -1,10 +1,11 @@
-import { Book, Author, User } from '../types'
+import { Book, Author, User, Content } from '../types'
 import * as booksAPI from './localStorage/booksAPI'
 import * as authorsAPI from './localStorage/authorsAPI'
 import * as usersAPI from './localStorage/usersAPI'
 import { mockBooks } from './mock/mockBooks'
 import { mockAuthors } from './mock/mockAuthors'
 import { mockUsers } from './mock/mockUsers'
+import { mockContent } from './mock/mockContent'
 
 const checkLocalStorage = <T>(key: string, fallbackData: T[]): T[] => {
   const data = localStorage.getItem(key)
@@ -26,6 +27,10 @@ export const getAuthors = (): Author[] => {
 
 export const getUsers = (): User[] => {
   return checkLocalStorage<User>('users', mockUsers)
+}
+
+export const getContent = (): Content[] => {
+  return checkLocalStorage<Content>('content', mockContent)
 }
 
 export const addBook = (book: Book): void => {

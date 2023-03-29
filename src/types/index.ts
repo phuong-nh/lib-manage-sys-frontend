@@ -15,7 +15,7 @@ export interface Book {
   authors: Author[]
   publishedDate: string
   copies: BookCopy[]
-  imgsrc: string | null
+  imgsrc?: string
 }
 
 export interface BookCopy {
@@ -34,4 +34,15 @@ export interface User {
   email: string
   role: 'user' | 'admin'
   imgsrc: string | null
+}
+
+export interface Content {
+  id: string
+  type: 'news' | 'book-info'
+  title: string
+  content: string
+  imageUrl?: string
+  date: string
+  showOnHomePage?: boolean
+  author: string
 }

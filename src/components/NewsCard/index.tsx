@@ -1,4 +1,7 @@
-import { Card, Image, Text, Group, Center, Avatar, createStyles, rem } from '@mantine/core'
+import { Card, Image, Text, Group, Center, Avatar, createStyles, rem, Button } from '@mantine/core'
+import { useNavigate } from 'react-router'
+
+import { Content } from '../../types'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -32,51 +35,50 @@ const useStyles = createStyles((theme) => ({
 }))
 
 interface NewsCardProps {
-  image: string
-  link: string
-  title: string
-  description: string
-  author: {
-    name: string
-    image: string
-  }
+  content: Content
 }
 
 export function NewsCard({
+  content,
   className,
-  image,
-  link,
-  title,
-  description,
-  author,
   ...others
 }: NewsCardProps & Omit<React.ComponentPropsWithoutRef<'div'>, keyof NewsCardProps>) {
   const { classes, cx } = useStyles()
-  const linkProps = { href: link, target: '_blank', rel: 'noopener noreferrer' }
+  const navigate = useNavigate()
+  const contentStripped = content.content.replace(/(<([^>]+)>)/gi, '')
 
   return (
-    <Card withBorder radius="md" className={cx(classes.card, className)} {...others}>
+    <Card
+      withBorder
+      radius="md"
+      className={cx(classes.card, className)}
+      {...others}
+      sx={{ minHeight: '100%' }}>
       <Card.Section>
-        <a {...linkProps}>
-          <Image src={image} height={180} />
-        </a>
+        <Image src={content.imageUrl} height={180} />
       </Card.Section>
 
-      <Text className={classes.title} fw={500} component="a" {...linkProps}>
-        {title}
+      <Text className={classes.title} fw={500}>
+        {content.title}
       </Text>
 
       <Text fz="sm" color="dimmed" lineClamp={4}>
-        {description}
+        {contentStripped.length > 100 ? contentStripped.substring(0, 100) + '...' : contentStripped}
       </Text>
 
       <Group position="apart" className={classes.footer}>
         <Center>
-          <Avatar src={author.image} size={24} radius="xl" mr="xs" />
+          <Avatar src={content.author} size={24} radius="xl" mr="xs" />
           <Text fz="sm" inline>
-            {author.name}
+            {content.author}
           </Text>
         </Center>
+        <Button
+          onClick={() => {
+            navigate('/content/' + content.id)
+          }}>
+          More
+        </Button>
       </Group>
     </Card>
   )

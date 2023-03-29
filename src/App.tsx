@@ -12,6 +12,7 @@ import { HeaderResponsive } from './components/HeaderResponsive'
 import headerLinks from './utils/headerLinks'
 import Profile from './pages/Profile/Profile'
 import Admin from './pages/Admin/Admin'
+import ContentPost from './pages/Content/ContentPost'
 
 const App = () => {
   const links = headerLinks()
@@ -41,6 +42,10 @@ const App = () => {
         {
           path: '/admin',
           element: <Admin />
+        },
+        {
+          path: '/content/:id',
+          element: <ContentPost />
         }
       ]
     }
