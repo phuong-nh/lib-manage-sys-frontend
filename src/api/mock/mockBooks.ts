@@ -38,8 +38,7 @@ export const mockBooks: Book[] = [
     publisher: 'HarperCollins',
     authors: [mockAuthors[1]],
     publishedDate: '1932-08-01',
-    imgsrc:
-      'https://covers.openlibrary.org/b/id/13008776-L.jpg',
+    imgsrc: 'https://covers.openlibrary.org/b/id/13008776-L.jpg',
     copies: [
       {
         id: '2_1',
@@ -58,8 +57,7 @@ export const mockBooks: Book[] = [
     publisher: 'Houghton Mifflin Harcourt',
     authors: [mockAuthors[2]],
     publishedDate: '1937-09-21',
-    imgsrc:
-      'https://covers.openlibrary.org/b/id/13766603-L.jpg',
+    imgsrc: 'https://covers.openlibrary.org/b/id/13766603-L.jpg',
     copies: [
       {
         id: '3_1',

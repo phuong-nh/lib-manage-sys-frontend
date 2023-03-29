@@ -1,15 +1,4 @@
-import {
-  Card,
-  Image,
-  Text,
-  ActionIcon,
-  Badge,
-  Group,
-  Center,
-  Avatar,
-  createStyles,
-  rem
-} from '@mantine/core'
+import { Card, Image, Text, Group, Center, Avatar, createStyles, rem } from '@mantine/core'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -62,7 +51,7 @@ export function NewsCard({
   author,
   ...others
 }: NewsCardProps & Omit<React.ComponentPropsWithoutRef<'div'>, keyof NewsCardProps>) {
-  const { classes, cx, theme } = useStyles()
+  const { classes, cx } = useStyles()
   const linkProps = { href: link, target: '_blank', rel: 'noopener noreferrer' }
 
   return (
@@ -88,7 +77,6 @@ export function NewsCard({
             {author.name}
           </Text>
         </Center>
-
       </Group>
     </Card>
   )

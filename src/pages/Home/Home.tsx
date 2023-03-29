@@ -15,7 +15,7 @@ const Home = () => {
         <Space h="xl" />
         <Grid grow gutter="xs">
           {news.map(({ id, ...other }) => (
-            <Grid.Col sm={6} xs={12}>
+            <Grid.Col sm={6} xs={12} key={id}>
               <NewsCard {...other} />
             </Grid.Col>
           ))}
@@ -26,7 +26,7 @@ const Home = () => {
         <Space h="xl" />
         <Grid grow gutter="xs">
           {recommendedBooks.map(({ id, ...other }) => (
-            <Grid.Col sm={6} xs={12}>
+            <Grid.Col sm={6} xs={12} key={id}>
               <BookRecommendationCard {...other} />
             </Grid.Col>
           ))}

@@ -17,9 +17,10 @@ import { IconEdit, IconX } from '@tabler/icons-react'
 import { AddUserModal, EditUserModal } from '../../components/AdminDataMod'
 import { removeUser } from '../../features/users/slice'
 import { User } from '../../types'
+import { RootState } from '../../store'
 
 const UserSection = () => {
-  const users = useSelector((state: any) => state.users.users)
+  const users = useSelector((state: RootState) => state.users.users)
   const [userList, setUserList] = useState(users)
   const [userPage, setUserPage] = useState(1)
   const dispatch = useDispatch()
@@ -80,9 +81,10 @@ const UserSection = () => {
                 </ActionIcon>
               </td>
               <td width={'1em'}>
-                <ActionIcon onClick={() => {
-                  dispatch(removeUser(user))
-                }}>
+                <ActionIcon
+                  onClick={() => {
+                    dispatch(removeUser(user))
+                  }}>
                   <IconX />
                 </ActionIcon>
               </td>

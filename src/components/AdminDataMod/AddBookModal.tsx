@@ -1,7 +1,5 @@
 import React, { forwardRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import { Author, Book, BookCopy, User } from '../../types'
 import { useForm } from '@mantine/form'
 import {
   Box,
@@ -18,7 +16,10 @@ import {
   CloseButton,
   rem
 } from '@mantine/core'
+
 import generateId from '../../utils/generateId'
+import { Author, Book, BookCopy } from '../../types'
+import { RootState } from '../../store'
 
 interface AddBookModalProps {
   onFinish: () => void
@@ -40,6 +41,8 @@ const SelectItem = forwardRef<HTMLDivElement, Author>(
     </div>
   )
 )
+
+SelectItem.displayName = 'SelectItem'
 
 function Value({ fullName, onRemove, ...others }: MultiSelectValueProps & Author) {
   return (
@@ -70,8 +73,8 @@ function Value({ fullName, onRemove, ...others }: MultiSelectValueProps & Author
 }
 
 const AddBookModal: React.FC<AddBookModalProps> = ({ onFinish }) => {
-  const books = useSelector((state: any) => state.library.books)
-  const authors = useSelector((state: any) => state.library.authors)
+  const books = useSelector((state: RootState) => state.library.books)
+  const authors = useSelector((state: RootState) => state.library.authors)
   const authorsWithValue = authors.map((author: Author) => ({
     ...author,
     value: author.id
@@ -101,8 +104,17 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ onFinish }) => {
     }
   })
 
-  const handleSubmit = (values: any) => {
-    let copiesArr: BookCopy[] = []
+  const handleSubmit = (values: {
+    copies: number
+    title: string
+    isbn: string
+    description: string
+    publisher: string
+    publishedDate: string
+    authors: string[]
+    imgsrc: string | null
+  }) => {
+    const copiesArr: BookCopy[] = []
     for (let i = 0; i < values.copies; i++) {
       copiesArr.push({
         id: generateId(books + i.toString()),
@@ -114,16 +126,16 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ onFinish }) => {
     }
 
     const newBook: Book = {
-      id: generateId(books),
+      id: generateId(values.title + values.isbn),
       title: values.title,
       description: values.description,
       publisher: values.publisher,
       publishedDate: values.publishedDate,
       ISBN: values.isbn,
       copies: copiesArr,
-      authors: values.authors.map((authorId: string) =>
-        authors.find((author: Author) => author.id === authorId)
-      ),
+      authors: values.authors
+        .map((authorId: string) => authors.find((author: Author) => author.id === authorId))
+        .filter((author: Author | undefined): author is Author => Boolean(author)),
       imgsrc: values.imgsrc
     }
     dispatch({ type: 'library/addBook', payload: newBook })

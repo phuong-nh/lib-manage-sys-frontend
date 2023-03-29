@@ -6,6 +6,7 @@ import { Box, Checkbox, Stack, Group, TextInput, Button, Switch } from '@mantine
 import { User } from '../../types'
 import generateId from '../../utils/generateId'
 import { addUser } from '../../features/users/slice'
+import { RootState } from '../../store'
 
 interface AddUserModalProps {
   onFinish: () => void
@@ -13,7 +14,7 @@ interface AddUserModalProps {
 
 const addUserModal: React.FC<AddUserModalProps> = ({ onFinish }) => {
   const [isFullNameEditable, setIsFullNameEditable] = useState(true)
-  const userList = useSelector((state: any) => state.users.users)
+  const userList = useSelector((state: RootState) => state.users.users)
   const dispatch = useDispatch()
 
   const form = useForm({
@@ -51,8 +52,15 @@ const addUserModal: React.FC<AddUserModalProps> = ({ onFinish }) => {
     }
   })
 
-  const handleSubmit = (values: any) => {
-    if (isFullNameEditable) {
+  const handleSubmit = (values: {
+    givenName: string | null
+    fullName: string | null
+    surName: string | null
+    email: string
+    imgsrc: string | null
+    isAdmin: boolean
+  }) => {
+    if (isFullNameEditable && values.fullName) {
       values.givenName = values.fullName.split(' ')[0]
       values.surName = values.fullName.split(' ').slice(1).join(' ')
     } else {

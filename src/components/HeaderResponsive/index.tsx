@@ -27,7 +27,7 @@ const useStyles = createStyles((theme) => ({
     position: 'sticky',
     top: 0,
     backgroundColor: theme.colors.white, // Adjust the background color according to your design
-    zIndex: 1000,
+    zIndex: 1000
   },
 
   dropdown: {
@@ -98,21 +98,21 @@ interface HeaderResponsiveProps {
 }
 
 export function HeaderResponsive({ links }: HeaderResponsiveProps) {
-  const location = useLocation();
+  const location = useLocation()
   const [opened, { toggle, close }] = useDisclosure(false)
   const [active, setActive] = useState(location.pathname)
   const { classes, cx } = useStyles()
 
   useEffect(() => {
-    setActive(location.pathname);
-  }, [location]);
+    setActive(location.pathname)
+  }, [location])
 
   const items = links.map((link) => (
     <Link
       key={link.label}
       to={link.link}
       className={cx(classes.link, { [classes.linkActive]: active === link.link })}
-      onClick={(event) => {
+      onClick={() => {
         // event.preventDefault()
         setActive(link.link)
         close()
@@ -127,7 +127,10 @@ export function HeaderResponsive({ links }: HeaderResponsiveProps) {
 
   return (
     <Box>
-      <Header height={HEADER_HEIGHT} className={cx(classes.root, classes.sticky)} sx={{ zIndex: 10 }}>
+      <Header
+        height={HEADER_HEIGHT}
+        className={cx(classes.root, classes.sticky)}
+        sx={{ zIndex: 10 }}>
         <Container className={classes.header}>
           <Text size="xl">Library Management System</Text>
           <Group spacing={5} className={classes.links}>

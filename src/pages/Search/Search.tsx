@@ -1,34 +1,21 @@
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  Group,
-  Pagination,
-  Stack,
-  TextInput,
-  Title
-} from '@mantine/core'
+import { Box, Button, Container, Divider, Group, Pagination, TextInput, Title } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 
 import SearchCard from '../../components/BookOverviewCard'
 import { borrowBook } from '../../features/library/slice'
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search)
-}
+import { RootState } from '../../store'
+import { Author, Book, BookCopy } from '../../types'
 
 const Search = () => {
-  const query = useQuery()
-  const books = useSelector((state: any) => state.library.books)
-  const [searchResults, setSearchResults] = useState<any>(books)
-  let [searchParams, setSearchParams] = useSearchParams()
+  const books = useSelector((state: RootState) => state.library.books)
+  const [searchResults, setSearchResults] = useState<Book[]>(books)
+  const [searchParams, setSearchParams] = useSearchParams()
   const dispatch = useDispatch()
   const [searchPage, setSearchPage] = useState(1)
-  const currentUser = useSelector((state: any) => state.users.currentUser)
+  const currentUser = useSelector((state: RootState) => state.users.currentUser)
 
   const form = useForm({
     initialValues: {
@@ -58,11 +45,11 @@ const Search = () => {
 
   const updateSearchResult = (searchTerms: string) => {
     setSearchResults(
-      books.filter((book: any) => {
+      books.filter((book: Book) => {
         return (
           book.title.toLowerCase().includes(searchTerms.toLowerCase()) ||
           book.authors
-            .map((author: any) => author.fullName)
+            .map((author: Author) => author.fullName)
             .join(', ')
             .toLowerCase()
             .includes(searchTerms.toLowerCase()) ||
@@ -115,39 +102,43 @@ const Search = () => {
           <Title order={2} my="xs">
             Results:
           </Title>
-          {getSearchList(searchPage).map((book: any) => (
-            <SearchCard
-              key={book.id}
-              book={book}
-              actionButton={
-                <Group>
-                  {currentUser && (
-                    <Button
-                      variant="outline"
-                      disabled={
-                        books
-                          .find((b: any) => b.id === book.id)
-                          .copies.find((copy: any) => copy.borrowerId === currentUser.id) !==
-                          undefined ||
-                        book.copies.find((copy: any) => copy.borrowerId === null) === undefined
-                      }
-                      onClick={() => {
-                        dispatch(
-                          borrowBook({
-                            bookId: book.id,
-                            borrowerId: currentUser.id,
-                            borrowDate: '2021-11-11'
-                          })
-                        )
-                      }}>
-                      Borrow
-                    </Button>
-                  )}
-                  <Button>More</Button>
-                </Group>
-              }
-            />
-          ))}
+          {books != undefined && searchResults.length > 0
+            ? getSearchList(searchPage).map((book: Book) => (
+                <SearchCard
+                  key={book.id}
+                  book={book}
+                  actionButton={
+                    <Group>
+                      {currentUser && (
+                        <Button
+                          variant="outline"
+                          disabled={
+                            books
+                              .find((b: Book) => b.id === book.id)
+                              ?.copies.find(
+                                (copy: BookCopy) => copy.borrowerId === currentUser.id
+                              ) !== undefined ||
+                            book.copies.find((copy: BookCopy) => copy.borrowerId === null) ===
+                              undefined
+                          }
+                          onClick={() => {
+                            dispatch(
+                              borrowBook({
+                                bookId: book.id,
+                                borrowerId: currentUser.id,
+                                borrowDate: '2021-11-11'
+                              })
+                            )
+                          }}>
+                          Borrow
+                        </Button>
+                      )}
+                      <Button>More</Button>
+                    </Group>
+                  }
+                />
+              ))
+            : null}
 
           <Group position="right">
             <Pagination

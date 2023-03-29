@@ -1,4 +1,4 @@
-import { Author } from "../../types";
+import { Author } from '../../types'
 
 export const mockAuthors: Author[] = [
   {
@@ -6,34 +6,34 @@ export const mockAuthors: Author[] = [
     givenName: 'George',
     surName: 'Orwell',
     fullName: 'George Orwell',
-    imgsrc: null,
+    imgsrc: null
   },
   {
     id: '2',
     givenName: 'Aldous',
     surName: 'Huxley',
     fullName: 'Aldous Huxley',
-    imgsrc: null,
+    imgsrc: null
   },
   {
     id: '3',
     givenName: 'J.R.R.',
     surName: 'Tolkien',
     fullName: 'J.R.R. Tolkien',
-    imgsrc: null,
+    imgsrc: null
   },
   {
     id: '4',
     givenName: 'J.K.',
     surName: 'Rowling',
     fullName: 'J.K. Rowling',
-    imgsrc: null,
+    imgsrc: null
   },
   {
     id: '5',
     givenName: 'Jane',
     surName: 'Austen',
     fullName: 'Jane Austen',
-    imgsrc: null,
-  },
-];
+    imgsrc: null
+  }
+]

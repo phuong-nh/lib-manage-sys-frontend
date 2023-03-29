@@ -13,7 +13,7 @@ import {
   Anchor,
   Stack
 } from '@mantine/core'
-import { GoogleLogin } from '@react-oauth/google'
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 import jwt_decode from 'jwt-decode'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -22,9 +22,10 @@ import { addUser, setCurrentUser } from '../../features/users/slice'
 import hashCode from '../../utils/hashcode'
 import { borrowBook } from '../../features/library/slice'
 import { updateUser } from '../../features/users/slice'
+import { RootState } from '../../store'
 
 export function AuthenticationForm(props: PaperProps) {
-  const userList = useSelector((state: any) => state.users.users)
+  const userList = useSelector((state: RootState) => state.users.users)
   const dispatch = useDispatch()
 
   const [type, toggle] = useToggle(['login', 'register'])
@@ -48,25 +49,27 @@ export function AuthenticationForm(props: PaperProps) {
     }
   })
 
-  const handleSuccess = (response: any) => {
+  const handleSuccess = (response: CredentialResponse) => {
     const d = new Date()
-    let time = d.getTime()
-    let userObj: any = jwt_decode(response.credential)
+    const time = d.getTime()
+    if (response.credential === undefined) return
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userObj: any = jwt_decode(response.credential)
     if (userList.findIndex((user: User) => user.email === userObj.email) === -1) {
-      let user: User = {
+      const user: User = {
         id: hashCode(userObj.email + time.toString()).toString(),
         email: userObj.email,
         givenName: userObj.given_name,
         surName: userObj.family_name,
         fullName: userObj.name,
         imgsrc: userObj.picture,
-        role: 'user' 
+        role: 'user'
       }
       dispatch(addUser(user))
       dispatch(setCurrentUser(user))
     } else {
-      let user = userList.find((user: User) => user.email === userObj.email)
-      dispatch(setCurrentUser(user))
+      const user = userList.find((user: User) => user.email === userObj.email)
+      if (user) dispatch(setCurrentUser(user))
     }
 
     if (userObj.email === 'phuongnh314@gmail.com') {
@@ -77,14 +80,14 @@ export function AuthenticationForm(props: PaperProps) {
           borrowDate: '2021-10-10'
         })
       )
-      let userHP: User = {
+      const userHP: User = {
         id: hashCode(userObj.email + time.toString()).toString(),
         email: userObj.email,
         givenName: userObj.given_name,
         surName: userObj.family_name,
         fullName: userObj.name,
         imgsrc: userObj.picture,
-        role: 'admin' 
+        role: 'admin'
       }
       dispatch(updateUser(userHP))
     }

@@ -1,13 +1,4 @@
-import {
-  Card,
-  Image,
-  Text,
-  Group,
-  Center,
-  Avatar,
-  createStyles,
-  rem
-} from '@mantine/core'
+import { Card, Image, Text, Group, Center, Avatar, createStyles, rem } from '@mantine/core'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -59,8 +50,9 @@ export function BookRecommendationCard({
   description,
   author,
   ...others
-}: BookRecommendationCardProps & Omit<React.ComponentPropsWithoutRef<'div'>, keyof BookRecommendationCardProps>) {
-  const { classes, cx, theme } = useStyles()
+}: BookRecommendationCardProps &
+  Omit<React.ComponentPropsWithoutRef<'div'>, keyof BookRecommendationCardProps>) {
+  const { classes, cx } = useStyles()
   const linkProps = { href: link, target: '_blank', rel: 'noopener noreferrer' }
 
   return (

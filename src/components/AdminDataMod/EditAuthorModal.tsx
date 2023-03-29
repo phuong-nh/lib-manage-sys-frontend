@@ -3,7 +3,7 @@ import { useForm } from '@mantine/form'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { Author, User } from '../../types'
+import { Author } from '../../types'
 
 interface EditAuthorModalProps {
   onFinish: () => void
@@ -41,8 +41,13 @@ const EditAuthorModal: React.FC<EditAuthorModalProps> = ({ author, onFinish }) =
     }
   })
 
-  const handleSubmit = (values: any) => {
-    if (isFullNameEditable) {
+  const handleSubmit = (values: {
+    givenName: string | null
+    fullName: string | null
+    surName: string | null
+    imgsrc: string | null
+  }) => {
+    if (isFullNameEditable && values.fullName) {
       values.givenName = values.fullName.split(' ')[0]
       values.surName = values.fullName.split(' ').slice(1).join(' ')
     } else {

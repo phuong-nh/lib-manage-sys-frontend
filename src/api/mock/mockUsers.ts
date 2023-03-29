@@ -1,5 +1,5 @@
-import { User } from "../../types";
-import hashCode from "../../utils/hashcode";
+import { User } from '../../types'
+import hashCode from '../../utils/hashcode'
 
 export const mockUsers: User[] = [
   {

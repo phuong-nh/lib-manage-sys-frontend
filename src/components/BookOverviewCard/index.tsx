@@ -4,11 +4,11 @@ import React from 'react'
 import { Author, Book } from '../../types'
 
 interface BookOverviewCardProps {
-  book: Book,
+  book: Book
   actionButton: React.ReactNode
 }
 
-const BookOverviewCard: React.FC<BookOverviewCardProps> = ({book, actionButton}) => {
+const BookOverviewCard: React.FC<BookOverviewCardProps> = ({ book, actionButton }) => {
   return (
     <Card radius="md" withBorder my="xs">
       <Group align={'flex-start'} spacing="xl" position="apart">
@@ -34,7 +34,9 @@ const BookOverviewCard: React.FC<BookOverviewCardProps> = ({book, actionButton})
           </Box>
           <Box>
             <Title order={3}>{book.title}</Title>
-            <Title order={6}>{book.authors.map((author: Author) => author.fullName).join(', ')}</Title>
+            <Title order={6}>
+              {book.authors.map((author: Author) => author.fullName).join(', ')}
+            </Title>
             <Text>{book.description}</Text>
             <Space h={'xs'} />
           </Box>

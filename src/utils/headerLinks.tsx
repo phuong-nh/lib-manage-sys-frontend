@@ -2,9 +2,11 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Avatar } from '@mantine/core'
 
+import { RootState } from '../store'
+
 function headerLinks() {
-  const currentUser = useSelector((state: any) => state.users.currentUser)
-  let links: { label: string; link: string; icon: React.FC | null }[] = [
+  const currentUser = useSelector((state: RootState) => state.users.currentUser)
+  const links: { label: string; link: string; icon: React.FC | null }[] = [
     { label: 'Home', link: '/', icon: null },
     { label: 'Search', link: '/search', icon: null }
   ]

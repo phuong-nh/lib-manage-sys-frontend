@@ -5,7 +5,7 @@ import libraryReducer from '../features/library/slice'
 
 const rootReducer = combineReducers({
   users: usersReducer,
-  library: libraryReducer,
+  library: libraryReducer
 })
 
 export default rootReducer

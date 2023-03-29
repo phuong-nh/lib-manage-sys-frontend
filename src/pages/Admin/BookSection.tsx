@@ -17,9 +17,10 @@ import { modals } from '@mantine/modals'
 import { AddBookModal, EditBookModal } from '../../components/AdminDataMod'
 import { removeBook } from '../../features/library/slice'
 import { Author, Book } from '../../types'
+import { RootState } from '../../store'
 
 const BookSection = () => {
-  const books = useSelector((state: any) => state.library.books)
+  const books = useSelector((state: RootState) => state.library.books)
   const [bookList, setBookList] = useState(books)
   const [bookPage, setBookPage] = useState(1)
   const dispatch = useDispatch()
@@ -84,16 +85,17 @@ const BookSection = () => {
                   onClick={() => {
                     modals.open({
                       title: <Text fw={700}>Edit Book</Text>,
-                      children: <EditBookModal onFinish={modals.closeAll} book={book}/>
+                      children: <EditBookModal onFinish={modals.closeAll} book={book} />
                     })
                   }}>
                   <IconEdit />
                 </ActionIcon>
               </td>
               <td width={'1em'}>
-                <ActionIcon onClick={() => {
-                  dispatch(removeBook(book.id))
-                }}>
+                <ActionIcon
+                  onClick={() => {
+                    dispatch(removeBook(book.id))
+                  }}>
                   <IconX />
                 </ActionIcon>
               </td>

@@ -1,10 +1,11 @@
-import { Box, Button, Checkbox, Group, Stack, TextInput} from '@mantine/core'
+import { Box, Button, Checkbox, Group, Stack, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
 
 import { logout } from '../../features/users/slice'
+import { RootState } from '../../store'
 import { User } from '../../types'
 
 interface OwnUserInfoProps {
@@ -12,9 +13,9 @@ interface OwnUserInfoProps {
   disabled?: boolean
 }
 
-const UserInfo: React.FC<OwnUserInfoProps> = ({ user, disabled }) => {
+const UserInfo: React.FC<OwnUserInfoProps> = ({ user }) => {
   const [isFullNameEditable, setIsFullNameEditable] = useState(true)
-  const userList = useSelector((state: any) => state.users.users)
+  const userList = useSelector((state: RootState) => state.users.users)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -52,8 +53,12 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user, disabled }) => {
     }
   })
 
-  const handleSubmit = (values: any) => {
-    if (isFullNameEditable) {
+  const handleSubmit = (values: {
+    givenName: string | null
+    fullName: string | null
+    surName: string | null
+  }) => {
+    if (isFullNameEditable && values.fullName) {
       values.givenName = values.fullName.split(' ')[0]
       values.surName = values.fullName.split(' ').slice(1).join(' ')
     } else {

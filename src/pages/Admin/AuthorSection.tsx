@@ -16,10 +16,11 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { AddAuthorModal, EditAuthorModal } from '../../components/AdminDataMod'
 import { removeAuthor } from '../../features/library/slice'
+import { RootState } from '../../store'
 import { Author } from '../../types'
 
 const AuthorSection = () => {
-  const authors = useSelector((state: any) => state.library.authors)
+  const authors = useSelector((state: RootState) => state.library.authors)
   const [authorList, setAuthorList] = useState(authors)
   const [authorPage, setAuthorPage] = useState(1)
   const dispatch = useDispatch()

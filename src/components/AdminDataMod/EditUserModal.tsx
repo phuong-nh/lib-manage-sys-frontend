@@ -3,16 +3,17 @@ import { useForm } from '@mantine/form'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateUser } from '../../features/users/slice'
+import { RootState } from '../../store'
 import { User } from '../../types'
 
 interface EditUserModalProps {
-  user: User,
+  user: User
   onFinish: () => void
 }
 
 const EditUserModal: React.FC<EditUserModalProps> = ({ user, onFinish }) => {
   const [isFullNameEditable, setIsFullNameEditable] = useState(true)
-  const userList = useSelector((state: any) => state.users.users)
+  const userList = useSelector((state: RootState) => state.users.users)
   const dispatch = useDispatch()
 
   const form = useForm({
@@ -50,8 +51,15 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onFinish }) => {
     }
   })
 
-  const handleSubmit = (values: any) => {
-    if (isFullNameEditable) {
+  const handleSubmit = (values: {
+    givenName: string | null
+    fullName: string | null
+    surName: string | null
+    email: string
+    imgsrc: string | null
+    isAdmin: boolean
+  }) => {
+    if (isFullNameEditable && values.fullName) {
       values.givenName = values.fullName.split(' ')[0]
       values.surName = values.fullName.split(' ').slice(1).join(' ')
     } else {

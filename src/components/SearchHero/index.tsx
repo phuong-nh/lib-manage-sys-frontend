@@ -10,7 +10,7 @@ import {
   Space
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -104,8 +104,8 @@ const useStyles = createStyles((theme) => ({
 }))
 
 export function SearchHero() {
-  const { classes, cx } = useStyles()
-  const navigate = useNavigate();
+  const { classes } = useStyles()
+  const navigate = useNavigate()
   const form = useForm({
     initialValues: {
       searchTerms: ''
@@ -124,7 +124,7 @@ export function SearchHero() {
     }
   })
 
-  const onSubmit = (values: {searchTerms: String}) => {
+  const onSubmit = (values: { searchTerms: string }) => {
     navigate(`/search?value=${values.searchTerms}`)
   }
 
