@@ -19,6 +19,7 @@ import {
 } from '@mantine/core'
 import generateId from '../../utils/generateId'
 import { RootState } from '../../store'
+import { updateBook } from '../../features/library/slice'
 
 interface EditBookModalProps {
   book: Book
@@ -111,7 +112,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ book, onFinish }) => {
     publishedDate: string
     isbn: string
     authors: string[]
-    imgsrc: string | null
+    imgsrc: string | undefined
   }) => {
     const copiesArr: BookCopy[] = []
     for (let i = 0; i < values.copies; i++) {
@@ -135,9 +136,9 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ book, onFinish }) => {
       authors: values.authors
         .map((authorId: string) => authors.find((author: Author) => author.id === authorId))
         .filter((author: Author | undefined): author is Author => author !== undefined),
-      imgsrc: values.imgsrc
+      imgsrc: values.imgsrc || undefined
     }
-    dispatch({ type: 'library/updateBook', payload: newBook })
+    dispatch(updateBook(newBook))
     onFinish()
   }
 

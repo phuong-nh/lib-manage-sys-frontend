@@ -20,6 +20,7 @@ import {
 import generateId from '../../utils/generateId'
 import { Author, Book, BookCopy } from '../../types'
 import { RootState } from '../../store'
+import { addBook } from '../../features/library/slice'
 
 interface AddBookModalProps {
   onFinish: () => void
@@ -138,7 +139,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ onFinish }) => {
         .filter((author: Author | undefined): author is Author => Boolean(author)),
       imgsrc: values.imgsrc || undefined
     }
-    dispatch({ type: 'library/addBook', payload: newBook })
+    dispatch(addBook(newBook))
     onFinish()
   }
 

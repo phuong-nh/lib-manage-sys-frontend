@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
 
-import { logout } from '../../features/users/slice'
+import { logout, updateUser } from '../../features/users/slice'
 import { RootState } from '../../store'
 import { User } from '../../types'
 
@@ -64,8 +64,13 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user }) => {
     } else {
       values.fullName = `${values.givenName} ${values.surName}`
     }
-    const updatedUser = { ...user, ...values }
-    dispatch({ type: 'users/updateUser', payload: updatedUser })
+    const updatedUser = {
+      ...user,
+      givenName: values.givenName,
+      surName: values.surName,
+      fullName: values.fullName
+    }
+    dispatch(updateUser(updatedUser))
   }
 
   return (
