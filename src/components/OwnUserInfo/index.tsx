@@ -3,6 +3,7 @@ import { useForm } from '@mantine/form'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
+import authConst from '../../constant/authentication'
 
 import { logout, updateUser } from '../../features/users/slice'
 import { RootState } from '../../store'
@@ -25,7 +26,8 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user }) => {
       surName: user.surName,
       fullName: user.fullName,
       email: user.email,
-      imgsrc: user.imgsrc
+      imgsrc: user.imgsrc,
+      authCode: ''
     },
     validate: {
       fullName: (value) => {
@@ -57,6 +59,7 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user }) => {
     givenName: string | null
     fullName: string | null
     surName: string | null
+    authCode: string | null
   }) => {
     if (isFullNameEditable && values.fullName) {
       values.givenName = values.fullName.split(' ')[0]
@@ -64,11 +67,17 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user }) => {
     } else {
       values.fullName = `${values.givenName} ${values.surName}`
     }
-    const updatedUser = {
+    const updatedUser: User = {
       ...user,
       givenName: values.givenName,
       surName: values.surName,
-      fullName: values.fullName
+      fullName: values.fullName,
+      role:
+        values.authCode === authConst.admin
+          ? 'admin'
+          : values.authCode === authConst.user
+          ? 'user'
+          : user.role
     }
     dispatch(updateUser(updatedUser))
   }
@@ -78,6 +87,7 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user }) => {
       <Group position="right">
         <Button
           color="red"
+          variant="outline"
           onClick={() => {
             dispatch(logout())
             navigate('/')
@@ -121,6 +131,11 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user }) => {
           </Group>
           <TextInput label="Email" placeholder="Email" required {...form.getInputProps('email')} />
           <TextInput label="Image URL" placeholder="Image URL" {...form.getInputProps('imgsrc')} />
+          <TextInput
+            label="Authorization code"
+            placeholder="Authorization code"
+            {...form.getInputProps('authCode')}
+          />
           <Group position="right">
             <Button type="submit">Save</Button>
           </Group>

@@ -20,8 +20,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { User } from '../../types'
 import { addUser, setCurrentUser } from '../../features/users/slice'
 import hashCode from '../../utils/hashcode'
-import { borrowBook } from '../../features/library/slice'
-import { updateUser } from '../../features/users/slice'
 import { RootState } from '../../store'
 
 export function AuthenticationForm(props: PaperProps) {
@@ -70,26 +68,6 @@ export function AuthenticationForm(props: PaperProps) {
     } else {
       const user = userList.find((user: User) => user.email === userObj.email)
       if (user) dispatch(setCurrentUser(user))
-    }
-
-    if (userObj.email === 'phuongnh314@gmail.com') {
-      dispatch(
-        borrowBook({
-          bookId: '3',
-          borrowerId: hashCode(userObj.email + time.toString()).toString(),
-          borrowDate: '2021-10-10'
-        })
-      )
-      const userHP: User = {
-        id: hashCode(userObj.email + time.toString()).toString(),
-        email: userObj.email,
-        givenName: userObj.given_name,
-        surName: userObj.family_name,
-        fullName: userObj.name,
-        imgsrc: userObj.picture,
-        role: 'admin'
-      }
-      dispatch(updateUser(userHP))
     }
   }
 

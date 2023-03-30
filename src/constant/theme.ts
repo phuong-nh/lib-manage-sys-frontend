@@ -2,7 +2,7 @@ import { MantineThemeOverride } from '@mantine/core'
 
 const libraryTheme: MantineThemeOverride = {
   colorScheme: 'light',
-  primaryColor: 'teal'
+  primaryColor: 'orange'
 }
 
 export default libraryTheme

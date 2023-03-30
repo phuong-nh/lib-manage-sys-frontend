@@ -12,7 +12,7 @@ const contentSlice = createSlice({
       return action.payload
     },
     addContent: (state, action: PayloadAction<Content>) => {
-      state.push(action.payload)
+      return [action.payload, ...state]
     },
     updateContent: (state, action: PayloadAction<Content>) => {
       const index = state.findIndex((item) => item.id === action.payload.id)

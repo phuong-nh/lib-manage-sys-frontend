@@ -39,7 +39,8 @@ function EditContentModal({ onFinish, content }: EditContentModalProps) {
     initialValues: {
       title: content.title,
       author: content.author,
-      showOnHomePage: defaultShowOnHomePage
+      showOnHomePage: defaultShowOnHomePage,
+      imageUrl: content.imageUrl
     },
 
     validate: {
@@ -48,7 +49,12 @@ function EditContentModal({ onFinish, content }: EditContentModalProps) {
     }
   })
 
-  const handleSubmit = (values: { title: string; author: string; showOnHomePage: boolean }) => {
+  const handleSubmit = (values: {
+    title: string
+    author: string
+    showOnHomePage: boolean
+    imageUrl: string | undefined
+  }) => {
     if (!editor || editor.getHTML().length < 10) {
       alert('Content is required')
       return
@@ -60,7 +66,8 @@ function EditContentModal({ onFinish, content }: EditContentModalProps) {
         content: editor.getHTML(),
         date: content.date,
         type: 'news',
-        showOnHomePage: values.showOnHomePage
+        showOnHomePage: values.showOnHomePage,
+        imageUrl: values.imageUrl
       }
       console.log(values)
       dispatch(updateContent(updatedContent))
@@ -84,9 +91,14 @@ function EditContentModal({ onFinish, content }: EditContentModalProps) {
             {...form.getInputProps('showOnHomePage')}
             checked={form.getInputProps('showOnHomePage').value}
           />
+          <TextInput
+            label="Image URL"
+            placeholder="Image URL"
+            {...form.getInputProps('imageUrl')}
+          />
 
           <RichTextEditor editor={editor}>
-            <RichTextEditor.Toolbar sticky stickyOffset={60}>
+            <RichTextEditor.Toolbar sticky stickyOffset={50}>
               <RichTextEditor.ControlsGroup>
                 <RichTextEditor.Bold />
                 <RichTextEditor.Italic />
@@ -98,7 +110,6 @@ function EditContentModal({ onFinish, content }: EditContentModalProps) {
               </RichTextEditor.ControlsGroup>
 
               <RichTextEditor.ControlsGroup>
-                <RichTextEditor.H1 />
                 <RichTextEditor.H2 />
                 <RichTextEditor.H3 />
                 <RichTextEditor.H4 />

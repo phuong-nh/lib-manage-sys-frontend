@@ -38,7 +38,8 @@ function AddContentModal({ onFinish }: AddContentModalProps) {
   const form = useForm({
     initialValues: {
       title: '',
-      author: ''
+      author: '',
+      imageUrl: ''
     },
 
     validate: {
@@ -47,7 +48,11 @@ function AddContentModal({ onFinish }: AddContentModalProps) {
     }
   })
 
-  const handleSubmit = (values: { title: string; author: string }) => {
+  const handleSubmit = (values: {
+    title: string
+    author: string
+    imageUrl: string | undefined
+  }) => {
     if (!editor || editor.getHTML().length < 10) {
       alert('Content is required')
       return
@@ -59,7 +64,8 @@ function AddContentModal({ onFinish }: AddContentModalProps) {
         content: editor.getHTML(),
         date: getCurrentDate(),
         type: 'news',
-        showOnHomePage: true
+        showOnHomePage: true,
+        imageUrl: values.imageUrl
       }
       dispatch(addContent(newContent))
       onFinish()
@@ -77,9 +83,14 @@ function AddContentModal({ onFinish }: AddContentModalProps) {
             required
             {...form.getInputProps('author')}
           />
+          <TextInput
+            label="Image URL"
+            placeholder="Image URL"
+            {...form.getInputProps('imageUrl')}
+          />
 
           <RichTextEditor editor={editor}>
-            <RichTextEditor.Toolbar sticky stickyOffset={60}>
+            <RichTextEditor.Toolbar sticky stickyOffset={50}>
               <RichTextEditor.ControlsGroup>
                 <RichTextEditor.Bold />
                 <RichTextEditor.Italic />
@@ -91,7 +102,6 @@ function AddContentModal({ onFinish }: AddContentModalProps) {
               </RichTextEditor.ControlsGroup>
 
               <RichTextEditor.ControlsGroup>
-                <RichTextEditor.H1 />
                 <RichTextEditor.H2 />
                 <RichTextEditor.H3 />
                 <RichTextEditor.H4 />

@@ -1,5 +1,6 @@
 import { Box, Button, Container, Divider, Group, Pagination, TextInput, Title } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { IconExternalLink } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
@@ -36,10 +37,10 @@ const Search = () => {
   })
 
   const getSearchList = (page: number) => {
-    if (page === (searchResults.length - 1) / 10 + 1) {
-      return searchResults.slice((page - 1) * 10, searchResults.length)
+    if (page === (searchResults.length - 1) / 5 + 1) {
+      return searchResults.slice((page - 1) * 5, searchResults.length)
     } else {
-      return searchResults.slice((page - 1) * 10, page * 10)
+      return searchResults.slice((page - 1) * 5, page * 5)
     }
   }
 
@@ -133,7 +134,7 @@ const Search = () => {
                           Borrow
                         </Button>
                       )}
-                      <Button>More</Button>
+                      <Button leftIcon={<IconExternalLink size="1.2em" />}>More</Button>
                     </Group>
                   }
                 />

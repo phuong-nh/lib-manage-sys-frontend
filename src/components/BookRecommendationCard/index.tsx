@@ -45,6 +45,7 @@ interface BookRecommendationCardProps {
 export function BookRecommendationCard({
   className,
   image,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   link,
   title,
   description,
@@ -53,7 +54,7 @@ export function BookRecommendationCard({
 }: BookRecommendationCardProps &
   Omit<React.ComponentPropsWithoutRef<'div'>, keyof BookRecommendationCardProps>) {
   const { classes, cx } = useStyles()
-  const linkProps = { href: link, target: '_blank', rel: 'noopener noreferrer' }
+  const linkProps = {}
 
   return (
     <Card withBorder radius="md" className={cx(classes.card, className)} {...others}>

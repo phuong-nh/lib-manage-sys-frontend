@@ -26,35 +26,24 @@
   "recommendedBooks": [
     {
       "id": 1,
-      "image": "https://example.com/images/great_novel.jpg",
+      "image": "http://static1.squarespace.com/static/5d7fa27ac591f01062106a9f/5dbbb95dfcb9741b8ddd9a1f/5f881d286efa6a17d1b7c9d0/1603169532762/The+Great+Indian+Novel.jpg?format=1500w",
       "link": "/books/1",
       "title": "The Great Novel",
       "description": "A captivating story of love, adventure, and self-discovery.",
       "author": {
         "name": "John Smith",
-        "image": "https://example.com/images/john_smith.jpg"
+        "image": "https://www.history.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTkxMTc1NzA2MzA1MTc3MzI0/portrait-of-john-smith.jpg"
       }
     },
     {
       "id": 2,
-      "image": "https://example.com/images/amazing_book.jpg",
+      "image": "https://www.novelsuspects.com/wp-content/uploads/2021/02/Crime-Fiction-that-Will-Keep-You-On-the-Edge-of-Your-Seat.png?fit=1200%2C600&w=640",
       "link": "/books/2",
       "title": "Another Amazing Book",
       "description": "A thrilling tale that will leave you on the edge of your seat.",
       "author": {
         "name": "Jane Johnson",
-        "image": "https://example.com/images/jane_johnson.jpg"
-      }
-    },
-    {
-      "id": 3,
-      "image": "https://example.com/images/amazing_book.jpg",
-      "link": "/books/3",
-      "title": "Another Amazing Book",
-      "description": "A thrilling tale that will leave you on the edge of your seat.",
-      "author": {
-        "name": "Jane Johnson",
-        "image": "https://example.com/images/jane_johnson.jpg"
+        "image": "https://cdn.pixabay.com/photo/2013/07/13/10/07/man-156584_960_720.png"
       }
     }
   ]

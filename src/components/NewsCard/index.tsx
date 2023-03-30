@@ -45,7 +45,14 @@ export function NewsCard({
 }: NewsCardProps & Omit<React.ComponentPropsWithoutRef<'div'>, keyof NewsCardProps>) {
   const { classes, cx } = useStyles()
   const navigate = useNavigate()
-  const contentStripped = content.content.replace(/(<([^>]+)>)/gi, '')
+  const contentStripped = content.content
+    .replace(/(<([^>]+)>)/gi, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/(\r\n|\n|\r)/gm, ' ')
+    .replace(/\s+/g, ' ')
 
   return (
     <Card

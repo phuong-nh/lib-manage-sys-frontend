@@ -16,10 +16,12 @@ function ContentPost() {
   return (
     <Box my="xl">
       <Container size="sm">
-        <img src={content.imageUrl} alt={content.title} />
+        <img src={content.imageUrl} alt={content.title} style={{ width: '100%', height: '100%' }} />
         <Space h="xl" />
         <Title order={2}>{content.title}</Title>
-        <Title order={5}>{content.author}</Title>
+        <Title order={5} color="dimmed">
+          {content.author}
+        </Title>
         <Space h="xl" />
         <Text>{parse(content.content)}</Text>
       </Container>
