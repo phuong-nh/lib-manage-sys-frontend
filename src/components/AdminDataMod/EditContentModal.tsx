@@ -69,7 +69,7 @@ function EditContentModal({ onFinish, content }: EditContentModalProps) {
         showOnHomePage: values.showOnHomePage,
         imageUrl: values.imageUrl
       }
-      console.log(values)
+      // console.log(values)
       dispatch(updateContent(updatedContent))
       onFinish()
     }

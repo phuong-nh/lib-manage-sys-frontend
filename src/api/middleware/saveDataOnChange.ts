@@ -33,7 +33,7 @@ export const saveDataOnChange: Middleware = (storeAPI) => (next) => (action) => 
   if (actionsToWatch.includes(action.type)) {
     const state: RootState = storeAPI.getState()
 
-    console.log('Saving data to localStorage...')
+    // console.log('Saving data to localStorage...')
 
     // Save data to localStorage
     saveBooks(state.library.books)

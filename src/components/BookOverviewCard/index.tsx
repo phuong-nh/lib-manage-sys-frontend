@@ -48,7 +48,7 @@ const BookOverviewCard: React.FC<BookOverviewCardProps> = ({ book, actionButton 
                 p="0"
                 onClick={() => {
                   setExpand(!expand)
-                  console.log(expand)
+                  // console.log(expand)
                 }}>
                 {expand ? 'Show less' : 'Show more'}
               </Button>

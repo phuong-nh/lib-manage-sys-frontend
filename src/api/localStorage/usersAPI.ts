@@ -38,7 +38,7 @@ export const saveCurrentUser = (user: User | null): void => {
 }
 
 export const loadCurrentUser = (): User | null => {
-  console.log('loadCurrentUser')
+  // console.log('loadCurrentUser')
   const currentUserJSON = localStorage.getItem(CURRENT_USER_KEY)
   return currentUserJSON ? JSON.parse(currentUserJSON) : null
 }

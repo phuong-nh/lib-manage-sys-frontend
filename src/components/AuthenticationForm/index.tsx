@@ -72,7 +72,7 @@ export function AuthenticationForm(props: PaperProps) {
   }
 
   const handleFailure = () => {
-    console.log('Uh-oh')
+    // console.log('Uh-oh')
   }
 
   return (
@@ -91,7 +91,7 @@ export function AuthenticationForm(props: PaperProps) {
 
       <form
         onSubmit={form.onSubmit(() => {
-          console.log(form.values)
+          // console.log(form.values)
         })}>
         <Stack>
           {type === 'register' && (
