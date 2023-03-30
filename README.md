@@ -63,3 +63,8 @@ Project Structure
   -   `utils/` - Utility functions
   -   `App.tsx` - Main application component
   -   `index.tsx` - Entry point of the application
+
+Class Diagram
+-------------
+
+![Class Diagram](public\uml.png)

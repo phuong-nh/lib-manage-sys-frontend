@@ -123,13 +123,14 @@ const Search = () => {
                               undefined
                           }
                           onClick={() => {
-                            dispatch(
-                              borrowBook({
-                                bookId: book.id,
-                                borrowerId: currentUser.id,
-                                borrowDate: '2021-11-11'
-                              })
-                            )
+                            if (!currentUser.isBanned)
+                              dispatch(
+                                borrowBook({
+                                  bookId: book.id,
+                                  borrowerId: currentUser.id,
+                                  borrowDate: '2021-11-11'
+                                })
+                              )
                           }}>
                           Borrow
                         </Button>

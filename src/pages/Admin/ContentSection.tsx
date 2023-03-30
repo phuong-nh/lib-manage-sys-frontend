@@ -37,9 +37,9 @@ function ContentSection() {
 
   return (
     <Stack my="xl">
-      <Title order={2}>Books</Title>
+      <Title order={2}>Content</Title>
       <TextInput
-        placeholder="Search books"
+        placeholder="Search contents"
         onChange={(e) => {
           setContentList(
             contents.filter((content: Content) => {

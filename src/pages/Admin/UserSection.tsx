@@ -68,7 +68,9 @@ const UserSection = () => {
               <td>{user.givenName}</td>
               <td>{user.surName}</td>
               <td>{user.email}</td>
-              <td>{user.role}</td>
+              <td>
+                {user.isBanned ? <Text color="red">{user.role}</Text> : <Text>{user.role}</Text>}
+              </td>
               <td width={'1em'}>
                 <ActionIcon
                   onClick={() => {

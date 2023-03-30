@@ -13,6 +13,7 @@ import headerLinks from './utils/headerLinks'
 import Profile from './pages/Profile/Profile'
 import Admin from './pages/Admin/Admin'
 import ContentPost from './pages/Content/ContentPost'
+import './App.css'
 
 const App = () => {
   const links = headerLinks()

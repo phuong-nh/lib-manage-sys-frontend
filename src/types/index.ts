@@ -34,6 +34,7 @@ export interface User {
   email: string
   role: 'user' | 'admin'
   imgsrc: string | null
+  isBanned?: boolean
 }
 
 export interface Content {

@@ -23,7 +23,8 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onFinish }) => {
       fullName: user.fullName,
       email: user.email,
       imgsrc: user.imgsrc,
-      isAdmin: user.role === 'admin'
+      isAdmin: user.role === 'admin',
+      isBanned: user.isBanned
     },
     validate: {
       fullName: (value) => {
@@ -58,6 +59,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onFinish }) => {
     email: string
     imgsrc: string | null
     isAdmin: boolean
+    isBanned: boolean | undefined
   }) => {
     if (isFullNameEditable && values.fullName) {
       values.givenName = values.fullName.split(' ')[0]
@@ -72,7 +74,8 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onFinish }) => {
       fullName: values.fullName,
       email: values.email,
       imgsrc: values.imgsrc,
-      role: values.isAdmin ? 'admin' : 'user'
+      role: values.isAdmin ? 'admin' : 'user',
+      isBanned: values.isBanned
     }
     dispatch(updateUser(updatedUser))
     onFinish()
@@ -116,12 +119,20 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onFinish }) => {
           </Group>
           <TextInput label="Email" placeholder="Email" required {...form.getInputProps('email')} />
           <TextInput label="Image URL" placeholder="Image URL" {...form.getInputProps('imgsrc')} />
-          <Switch
-            label="Admin"
-            my="sm"
-            {...form.getInputProps('isAdmin')}
-            checked={form.getInputProps('isAdmin').value}
-          />
+          <Stack my="sm">
+            <Switch
+              label="Admin"
+              {...form.getInputProps('isAdmin')}
+              checked={form.getInputProps('isAdmin').value}
+              color="blue"
+            />
+            <Switch
+              label="Banned"
+              {...form.getInputProps('isBanned')}
+              checked={form.getInputProps('isBanned').value}
+              color="red"
+            />
+          </Stack>
           <Group position="right">
             <Button type="submit">Save</Button>
           </Group>
