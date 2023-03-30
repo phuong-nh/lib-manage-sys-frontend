@@ -1,127 +1,65 @@
-# Frontend project
+Library Management System - Front-End Project
+=============================================
 
-## Expectation
+A comprehensive front-end library management system that serves both users and administrators, built with React, Redux, Mantine, and LocalStorage.
 
-### `Tech Stack:`
+Link to website: [https://phuongnh-library.netlify.app/](https://phuongnh-library.netlify.app/)
 
-React, TypeScript and Redux. And for styling, choose whatever you like (ideally, something you already know.)
+Since this is a front-end project, the back-end API is not included. Thus, please login with your Google account to use the application. The admin functionalities can be accessed by adding this authorization code: `admin` on /profile page. The application store all the mock data and user generated content in the browser's local storage, so you can use the application without the need to connect to the back-end API. The application is also responsive and can be used on mobile devices (except for the admin dashboard).
 
-### `Outcome:`
+![Library Management System Screenshot](public\screenshot.png)
 
-Build a front end for an E-commerce or a Library System and deploy it.
+Features
+--------
 
-The Frontend should be talking to a mock data that stored locally in your project and later (in the fullstack project) you would plug it (to your backend.), refactor, and add more features(maybe).
+-   User registration and login
+-   Browsing and searching for books
+-   Viewing book details and author information
+-   Borrowing and returning books
+-   Adding favorite books and managing personal virtual bookshelves
+-   Updating user account information
+-   Admin dashboard for managing users, books, and authors
 
-## Assignment
+Tech Stack
+----------
 
----
+-   [React](https://reactjs.org/) - UI library for building component-based user interfaces
+-   [Redux](https://redux.js.org/) - State management library for maintaining and scaling application state
+-   [Mantine](https://mantine.dev/) - React components and hooks library for building modern web applications
+-   [LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) - Web storage API for persisting data across browser sessions
 
-### `Option 1`
+Getting Started
+---------------
 
-**A Library management system**
+To run this project locally, follow these steps:
 
-you have to have `at least` these data sources:
-(the properties that being mentioned below each data source are the minimum)
+1. Clone the repository:
 
-- Books
-  - ISBN
-  - title
-  - description
-  - publisher
-  - authors
-  - status: available or borrowed
-  - borrowerId
-  - publishedDate
-  - borrowDate
-  - returnDate
-- Authors
-  - name
-- Users (as visitor or admin)
-  - firstName (from google)
-  - lastName (from google)
-  - email (from google)
+``` {.sourceCode .bash}
+git clone https://github.com/yourusername/lib-manage-sys-frontend.git
+cd library-management-system
+```
 
-**Use cases:**
+2.  Install dependencies:
 
-Visitor can:
+`yarn install`
 
-- login (using login via google)
-- explore list of books
-- filter and search
-- borrow a book
-- return a borrowed book
+3.  Start the development server:
 
-Admin can:
+`npm run dev`
 
-- add new book
-- update info of a book
-- remove a book
-- add a new author
-- update info of an author
-- remove an author
+4.  Open your browser and navigate to [http://localhost:5173](http://localhost:5173/) to view the application.
 
-PS. if you want to store some data, you could use LocalStorage for now.
+Project Structure
+-----------------
 
----
-
-### `Option 2`
-
-**An E-commerce website**
-
-you have to have `at least` these data sources:
-(the properties that being mentioned are the minimum)
-
-- Products
-  - id
-  - name
-  - description
-  - categories
-  - variants
-  - sizes
-- Orders
-  - productId
-  - userId
-  - purchasedAt
-- Users (as visitor or admin)
-  - firstName (from google)
-  - lastName (from google)
-  - email (from google)
-
-**Use cases:**
-
-Visitor can:
-
-- login (using login via google)
-- explore list of products
-- filter and search
-- Add to a cart
-- checkout product/s
-
-Admin can:
-
-- add new product
-- update info of a product
-- remove a product
-- ban a user
-
-PS. if you want to store some data, you could use LocalStorage for now.
-
----
-
-## Way of working
-
-Your task here is to prepare the UI part of it and its functionalities ie.
-you are working on the UI of adding new item
-
-here's how to approach it:
-
-1. create the UI part (including form)
-2. handle the validation
-3. make sure the form is working and when you submit you get the new item
-4. send it to Redux and skip the part where you send a request (you will add it later) and return the new data to the state.
-
----
-
-## Lastly
-
-Any additional features are welcome, like switching theme or other cool stuff. **but make sure you work on the required ones first.**
+-   `src/`
+  -   `components/` - Reusable components used across the application
+  -   `constants/` - Constants used across the application
+  -   `features`: Contains feature-specific code, such as Redux slices and thunks, and feature-specific components.
+  -   `pages/` - Main pages of the application, such as the homepage, user dashboard, and admin dashboard
+  -   `redux/` - Redux store configuration, reducers, and actions
+  -   `types/` - TypeScript interfaces for data types, such as books, authors, and users
+  -   `utils/` - Utility functions
+  -   `App.tsx` - Main application component
+  -   `index.tsx` - Entry point of the application
