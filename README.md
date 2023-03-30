@@ -7,7 +7,7 @@ Link to website: [https://phuongnh-library.netlify.app/](https://phuongnh-librar
 
 Since this is a front-end project, the back-end API is not included. Thus, please login with your Google account to use the application. The admin functionalities can be accessed by adding this authorization code: `admin` on /profile page. The application store all the mock data and user generated content in the browser's local storage, so you can use the application without the need to connect to the back-end API. The application is also responsive and can be used on mobile devices (except for the admin dashboard).
 
-![Library Management System Screenshot](public\screenshot.png)
+![Library Management System Screenshot](public/screenshot.png)
 
 Features
 --------
@@ -67,4 +67,4 @@ Project Structure
 Class Diagram
 -------------
 
-![Class Diagram](public\uml.png)
+![Class Diagram](public/uml.png)
