@@ -5,7 +5,7 @@ import { Avatar } from '@mantine/core'
 import { RootState } from '../store'
 
 function headerLinks() {
-  const currentUser = useSelector((state: RootState) => state.users.currentUser)
+  const currentUser = useSelector((state: RootState) => state.currentUser.user)
   const links: { label: string; link: string; icon: React.FC | null }[] = [
     { label: 'Home', link: '/', icon: null },
     { label: 'Search', link: '/search', icon: null }
@@ -17,7 +17,7 @@ function headerLinks() {
       link: '/profile',
       icon: () => <Avatar src={currentUser.imgsrc} radius="xl" size="sm" />
     })
-    if (currentUser.role === 'admin') {
+    if (currentUser.role === 'ADMIN' || currentUser.role === 'SUPERUSER') {
       links.push({ label: 'Admin', link: '/admin', icon: null })
     }
     return links

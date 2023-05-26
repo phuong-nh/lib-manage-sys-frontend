@@ -1,6 +1,6 @@
-import { Box, Button, Group, Stack, TextInput } from '@mantine/core'
+import { Box, Button, Checkbox, Group, Select, Stack, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RichTextEditor, Link } from '@mantine/tiptap'
 import { useEditor } from '@tiptap/react'
 import Highlight from '@tiptap/extension-highlight'
@@ -13,14 +13,22 @@ import SubScript from '@tiptap/extension-subscript'
 import generateId from '../../utils/generateId'
 import { Content } from '../../types'
 import getCurrentDate from '../../utils/getCurrentDate'
-import { addContent } from '../../features/content/slice'
+import { RootState, useAppDispatch } from '../../store'
+import { addContent, fetchContents } from '../../features/contents/thunk'
+import React from 'react'
 
 interface AddContentModalProps {
   onFinish: () => void
 }
 
 function AddContentModal({ onFinish }: AddContentModalProps) {
-  const dispatch = useDispatch()
+  const currentUser = useSelector((state: RootState) => state.currentUser.user)
+
+  if (!currentUser) {
+    throw new Error('Current User is not defined')
+  }
+
+  const dispatch = useAppDispatch()
 
   const editor = useEditor({
     extensions: [
@@ -38,36 +46,33 @@ function AddContentModal({ onFinish }: AddContentModalProps) {
   const form = useForm({
     initialValues: {
       title: '',
-      author: '',
-      imageUrl: ''
-    },
+      contentType: 'NEWS',
+      content: '',
+      imgsrc: '',
+      date: new Date().toISOString(),
+      showOnHomePage: true,
+      authorId: currentUser.id
+    } as Content,
 
     validate: {
-      title: (value: string) => !value && 'Title is required',
-      author: (value: string) => !value && 'Author is required'
+      title: (value: string) => !value && 'Title is required'
     }
   })
 
-  const handleSubmit = (values: {
-    title: string
-    author: string
-    imageUrl: string | undefined
-  }) => {
+  const handleSubmit = async (values: Content) => {
+    // console.log(values)
     if (!editor || editor.getHTML().length < 10) {
       alert('Content is required')
       return
     } else {
       const newContent: Content = {
-        id: generateId(values.title + values.author),
-        title: values.title,
-        author: values.author,
-        content: editor.getHTML(),
-        date: getCurrentDate(),
-        type: 'news',
-        showOnHomePage: true,
-        imageUrl: values.imageUrl
+        ...values,
+        date: '',
+        id: '',
+        content: editor.getHTML()
       }
-      dispatch(addContent(newContent))
+      await dispatch(addContent(newContent))
+      await dispatch(fetchContents())
       onFinish()
     }
   }
@@ -77,17 +82,9 @@ function AddContentModal({ onFinish }: AddContentModalProps) {
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
           <TextInput label="Title" placeholder="Title" required {...form.getInputProps('title')} />
-          <TextInput
-            label="Author"
-            placeholder="Author"
-            required
-            {...form.getInputProps('author')}
-          />
-          <TextInput
-            label="Image URL"
-            placeholder="Image URL"
-            {...form.getInputProps('imageUrl')}
-          />
+          <TextInput label="Image URL" placeholder="Image URL" {...form.getInputProps('imgsrc')} />
+
+          <Select data={['NEWS', 'BLOG']} label="Type" {...form.getInputProps('contentType')} />
 
           <RichTextEditor editor={editor}>
             <RichTextEditor.Toolbar sticky stickyOffset={50}>
@@ -132,8 +129,9 @@ function AddContentModal({ onFinish }: AddContentModalProps) {
             <RichTextEditor.Content />
           </RichTextEditor>
 
+          <Checkbox label="Show on home page" {...form.getInputProps('showOnHomePage')} />
           <Group position="right">
-            <Button type="submit">Add</Button>
+            <Button type="submit">Add Content</Button>
           </Group>
         </Stack>
       </form>

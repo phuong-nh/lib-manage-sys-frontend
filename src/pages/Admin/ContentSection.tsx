@@ -15,18 +15,20 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AddContentModal, EditContentModal } from '../../components/AdminDataMod'
 
-import { removeContent } from '../../features/content/slice'
-import { RootState } from '../../store'
+import { fetchContents, removeContent } from '../../features/contents/thunk'
+import { RootState, useAppDispatch } from '../../store'
 import { Content } from '../../types'
 
 function ContentSection() {
-  const contents = useSelector((state: RootState) => state.contents)
+  const contents = useSelector((state: RootState) => state.contents.contents)
   const [contentList, setContentList] = useState(contents)
   const [contentPage, setContentPage] = useState(1)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
-    setContentList(contents)
+    setContentList(
+      contents.filter((content) => content.contentType === 'NEWS' || content.contentType === 'BLOG')
+    )
   }, [contents])
 
   const getContentList = (page: number) => {
@@ -45,7 +47,7 @@ function ContentSection() {
             contents.filter((content: Content) => {
               return (
                 content.title.toLowerCase().includes(e.currentTarget.value.toLowerCase()) ||
-                content.author.toLowerCase().includes(e.currentTarget.value.toLowerCase()) ||
+                // content.author.toLowerCase().includes(e.currentTarget.value.toLowerCase()) ||
                 content.content.toLowerCase().includes(e.currentTarget.value.toLowerCase()) ||
                 content.date.toLowerCase().includes(e.currentTarget.value.toLowerCase())
               )
@@ -57,7 +59,7 @@ function ContentSection() {
         <thead>
           <tr>
             <th>Title</th>
-            <th>Author</th>
+            {/*<th>Author</th>*/}
             <th>Date</th>
             <th>Show</th>
             <th></th>
@@ -68,7 +70,12 @@ function ContentSection() {
           {getContentList(contentPage).map((content) => (
             <tr key={content.id}>
               <td>{content.title}</td>
-              <td>{content.author}</td>
+              {/*<td>*/}
+              {/*  {*/}
+              {/*    // content.author*/}
+              {/*    'author'*/}
+              {/*  }*/}
+              {/*</td>*/}
               <td>{content.date}</td>
               <td>
                 {content.showOnHomePage ? (
@@ -95,8 +102,9 @@ function ContentSection() {
               </td>
               <td width={'1em'}>
                 <ActionIcon
-                  onClick={() => {
-                    dispatch(removeContent(content.id))
+                  onClick={async () => {
+                    await dispatch(removeContent(content.id))
+                    await dispatch(fetchContents())
                   }}>
                   <IconX />
                 </ActionIcon>

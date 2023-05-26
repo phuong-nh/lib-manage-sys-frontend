@@ -14,9 +14,24 @@ import Profile from './pages/Profile/Profile'
 import Admin from './pages/Admin/Admin'
 import ContentPost from './pages/Content/ContentPost'
 import './App.css'
+import { RootState, useAppDispatch } from './store'
+import Cookies from 'js-cookie'
+import { fetchOwnUser } from './features/currentUser/thunk'
+import { useSelector } from 'react-redux'
+import BookPage from './pages/Book/BookPage'
 
 const App = () => {
   const links = headerLinks()
+  const dispatch = useAppDispatch()
+  const currentUser = useSelector((state: RootState) => state.currentUser)
+
+  if (
+    Cookies.get('token') !== 'undefined' &&
+    Cookies.get('token') !== undefined &&
+    currentUser.user === null
+  ) {
+    dispatch(fetchOwnUser())
+  }
 
   const router = createBrowserRouter([
     {
@@ -45,8 +60,12 @@ const App = () => {
           element: <Admin />
         },
         {
-          path: '/content/:id',
+          path: '/contents/:id',
           element: <ContentPost />
+        },
+        {
+          path: '/book/:bookId',
+          element: <BookPage />
         }
       ]
     }

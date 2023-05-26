@@ -15,19 +15,22 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AddAuthorModal, EditAuthorModal } from '../../components/AdminDataMod'
-import { removeAuthor } from '../../features/library/slice'
-import { RootState } from '../../store'
+import { RootState, useAppDispatch } from '../../store'
 import { Author } from '../../types'
+import { fetchAuthors, removeAuthor } from '../../features/authors/thunk'
+import { fetchContents } from '../../features/contents/thunk'
 
 const AuthorSection = () => {
-  const authors = useSelector((state: RootState) => state.library.authors)
+  const authors = useSelector((state: RootState) => state.authors.authors)
   const [authorList, setAuthorList] = useState(authors)
   const [authorPage, setAuthorPage] = useState(1)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setAuthorList(authors)
   }, [authors])
+
+  // console.log(authors)
 
   const getAuthorList = (page: number) => {
     if (page === (authorList.length - 1) / 5 + 1)
@@ -43,7 +46,13 @@ const AuthorSection = () => {
         onChange={(e) => {
           setAuthorList(
             authors.filter((author: Author) => {
-              return author.fullName.toLowerCase().includes(e.currentTarget.value.toLowerCase())
+              return (
+                author.isGivenSurName
+                  ? author.givenName + ' ' + author.surName
+                  : author.surName + ' ' + author.givenName
+              )
+                .toLowerCase()
+                .includes(e.currentTarget.value.toLowerCase())
             })
           )
         }}
@@ -67,7 +76,8 @@ const AuthorSection = () => {
                   onClick={() => {
                     modals.open({
                       title: <Text fw={700}>Edit Author</Text>,
-                      children: <EditAuthorModal onFinish={modals.closeAll} author={author} />
+                      children: <EditAuthorModal onFinish={modals.closeAll} author={author} />,
+                      size: 'xl'
                     })
                   }}>
                   <IconEdit />
@@ -75,8 +85,10 @@ const AuthorSection = () => {
               </td>
               <td width={'1em'}>
                 <ActionIcon
-                  onClick={() => {
-                    dispatch(removeAuthor(author.id))
+                  onClick={async () => {
+                    await dispatch(removeAuthor(author.id))
+                    await dispatch(fetchAuthors())
+                    await dispatch(fetchContents())
                   }}>
                   <IconX />
                 </ActionIcon>
@@ -90,7 +102,8 @@ const AuthorSection = () => {
           onClick={() => {
             modals.open({
               title: <Text fw={700}>Add Author</Text>,
-              children: <AddAuthorModal onFinish={modals.closeAll} />
+              children: <AddAuthorModal onFinish={modals.closeAll} />,
+              size: 'xl'
             })
           }}>
           Add Author

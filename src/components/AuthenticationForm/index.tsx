@@ -13,66 +13,60 @@ import {
   Anchor,
   Stack
 } from '@mantine/core'
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
-import jwt_decode from 'jwt-decode'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { User } from '../../types'
-import { addUser, setCurrentUser } from '../../features/users/slice'
-import hashCode from '../../utils/hashcode'
-import { RootState } from '../../store'
+import { loginUser, registerUser } from '../../features/currentUser/thunk'
+import { useAppDispatch } from '../../store'
 
 export function AuthenticationForm(props: PaperProps) {
-  const userList = useSelector((state: RootState) => state.users.users)
-  const dispatch = useDispatch()
-
   const [type, toggle] = useToggle(['login', 'register'])
+  const dispatch = useAppDispatch()
+
   const form = useForm({
     initialValues: {
+      givenName: '',
+      surName: '',
+      isGivenSurName: true,
       email: '',
-      firstName: '',
-      lastName: '',
       password: '',
-      terms: true
+      terms: false
     },
 
     validate: {
-      email: (val) => {
-        if (/^\S+@\S+$/.test(val) == false) return 'Invalid email'
-        if (userList.findIndex((user: User) => user.email === val) !== -1)
-          return 'Email already exists'
-        return null
-      },
-      password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null)
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+      password: (value) =>
+        value.length >= 8 ? null : 'Password should include at least 8 characters',
+      terms: (value) => (value || type === 'login' ? null : 'You must accept terms and conditions'),
+      givenName: (value) => (value || type === 'login' ? null : 'Given name is required'),
+      surName: (value) => (value || type === 'login' ? null : 'Surname is required'),
+      isGivenSurName: (value) => (value || type === 'login' ? null : 'This field is required')
     }
   })
 
-  const handleSuccess = (response: CredentialResponse) => {
-    const d = new Date()
-    const time = d.getTime()
-    if (response.credential === undefined) return
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const userObj: any = jwt_decode(response.credential)
-    if (userList.findIndex((user: User) => user.email === userObj.email) === -1) {
-      const user: User = {
-        id: hashCode(userObj.email + time.toString()).toString(),
-        email: userObj.email,
-        givenName: userObj.given_name,
-        surName: userObj.family_name,
-        fullName: userObj.name,
-        imgsrc: userObj.picture,
-        role: 'user'
-      }
-      dispatch(addUser(user))
-      dispatch(setCurrentUser(user))
-    } else {
-      const user = userList.find((user: User) => user.email === userObj.email)
-      if (user) dispatch(setCurrentUser(user))
-    }
+  const handleLogin = (values: { email: string; password: string }) => {
+    dispatch(loginUser(values))
   }
 
-  const handleFailure = () => {
-    // console.log('Uh-oh')
+  const handleRegister = (values: {
+    givenName: string
+    surName: string
+    email: string
+    password: string
+    isGivenSurName: boolean
+  }) => {
+    dispatch(registerUser(values))
+  }
+
+  const handleSubmit = (values: {
+    givenName: string
+    surName: string
+    email: string
+    password: string
+    isGivenSurName: boolean
+  }) => {
+    if (type === 'login') {
+      handleLogin(values)
+    } else {
+      handleRegister(values)
+    }
   }
 
   return (
@@ -81,33 +75,26 @@ export function AuthenticationForm(props: PaperProps) {
         Welcome to Library Management System
       </Text>
 
-      <Divider label="Continue with Google" labelPosition="center" my="lg" />
+      <Divider label="Login or Register" labelPosition="center" my="lg" />
 
-      <Group sx={{ display: 'flex', justifyContent: 'center', width: '100%', py: '1rem' }}>
-        <GoogleLogin onSuccess={handleSuccess} onError={handleFailure} />
-      </Group>
-
-      <Divider label="Or continue with email" labelPosition="center" my="lg" />
-
-      <form
-        onSubmit={form.onSubmit(() => {
-          // console.log(form.values)
-        })}>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
           {type === 'register' && (
             <TextInput
-              label="First name"
-              value={form.values.firstName}
-              onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
+              required
+              label="Given name"
+              value={form.values.givenName}
+              onChange={(event) => form.setFieldValue('givenName', event.currentTarget.value)}
               radius="md"
             />
           )}
 
           {type === 'register' && (
             <TextInput
-              label="Last name"
-              value={form.values.lastName}
-              onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
+              required
+              label="Surname"
+              value={form.values.surName}
+              onChange={(event) => form.setFieldValue('surName', event.currentTarget.value)}
               radius="md"
             />
           )}
@@ -117,7 +104,7 @@ export function AuthenticationForm(props: PaperProps) {
             label="Email"
             value={form.values.email}
             onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-            error={form.errors.email && 'Invalid email'}
+            error={form.errors.email}
             radius="md"
           />
 
@@ -126,7 +113,7 @@ export function AuthenticationForm(props: PaperProps) {
             label="Password"
             value={form.values.password}
             onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-            error={form.errors.password && 'Password should include at least 6 characters'}
+            error={form.errors.password}
             radius="md"
           />
 

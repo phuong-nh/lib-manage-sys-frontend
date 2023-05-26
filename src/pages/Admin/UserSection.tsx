@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { modals } from '@mantine/modals'
 import {
   Stack,
@@ -14,16 +14,17 @@ import {
 } from '@mantine/core'
 import { IconEdit, IconX } from '@tabler/icons-react'
 
-import { AddUserModal, EditUserModal } from '../../components/AdminDataMod'
-import { removeUser } from '../../features/users/slice'
+import { EditUserModal } from '../../components/AdminDataMod'
+import { fetchUsers, removeUser } from '../../features/users/thunk'
 import { User } from '../../types'
-import { RootState } from '../../store'
+import { RootState, useAppDispatch } from '../../store'
+import { fetchOwnUser } from '../../features/currentUser/thunk'
 
 const UserSection = () => {
   const users = useSelector((state: RootState) => state.users.users)
   const [userList, setUserList] = useState(users)
   const [userPage, setUserPage] = useState(1)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setUserList(users)
@@ -43,8 +44,14 @@ const UserSection = () => {
         onChange={(e) => {
           setUserList(
             users.filter((user: User) => {
+              if (!user.email) throw new Error('User email is undefined')
               return (
-                user.fullName.toLowerCase().includes(e.currentTarget.value.toLowerCase()) ||
+                (user.isGivenSurName
+                  ? user.givenName + ' ' + user.surName
+                  : user.surName + ' ' + user.givenName
+                )
+                  .toLowerCase()
+                  .includes(e.currentTarget.value.toLowerCase()) ||
                 user.email.toLowerCase().includes(e.currentTarget.value.toLowerCase())
               )
             })
@@ -54,8 +61,8 @@ const UserSection = () => {
       <Table withBorder>
         <thead>
           <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Given Name</th>
+            <th>Surname</th>
             <th>Email</th>
             <th>Role</th>
             <th></th>
@@ -84,8 +91,10 @@ const UserSection = () => {
               </td>
               <td width={'1em'}>
                 <ActionIcon
-                  onClick={() => {
-                    dispatch(removeUser(user))
+                  onClick={async () => {
+                    await dispatch(removeUser(user.id))
+                    await dispatch(fetchUsers())
+                    await dispatch(fetchOwnUser())
                   }}>
                   <IconX />
                 </ActionIcon>
@@ -96,11 +105,12 @@ const UserSection = () => {
       </Table>
       <Group position="apart">
         <Button
+          disabled
           onClick={() => {
-            modals.open({
-              title: <Text fw={700}>Add User</Text>,
-              children: <AddUserModal onFinish={modals.closeAll} />
-            })
+            // modals.open({
+            //   title: <Text fw={700}>Add User</Text>,
+            //   children: <AddUserModal onFinish={modals.closeAll} />
+            // })
           }}>
           Add User
         </Button>

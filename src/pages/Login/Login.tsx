@@ -6,7 +6,7 @@ import { AuthenticationForm } from '../../components/AuthenticationForm'
 import { RootState } from '../../store'
 
 const Login = () => {
-  const currentUser = useSelector((state: RootState) => state.users.currentUser)
+  const currentUser = useSelector((state: RootState) => state.currentUser.user)
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

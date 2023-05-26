@@ -1,51 +1,69 @@
 import React, { forwardRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from '@mantine/form'
 import {
-  Box,
-  Stack,
-  Group,
-  TextInput,
   Button,
+  TextInput,
   Textarea,
   NumberInput,
   MultiSelect,
-  Text,
+  Box,
+  Stack,
+  Group,
   Avatar,
-  MultiSelectValueProps,
+  Text,
+  rem,
   CloseButton,
-  rem
+  MultiSelectValueProps
 } from '@mantine/core'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState, useAppDispatch } from '../../store'
 
 import generateId from '../../utils/generateId'
-import { Author, Book, BookCopy } from '../../types'
-import { RootState } from '../../store'
-import { addBook } from '../../features/library/slice'
+import { addBook } from '../../features/books/thunk'
+
+import { Author, Book, BookCopy, Content } from '../../types'
+import { useEditor } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import Underline from '@tiptap/extension-underline'
+import { Link, RichTextEditor } from '@mantine/tiptap'
+import Superscript from '@tiptap/extension-superscript'
+import SubScript from '@tiptap/extension-subscript'
+import Highlight from '@tiptap/extension-highlight'
+import TextAlign from '@tiptap/extension-text-align'
+import { fetchContents } from '../../features/contents/thunk'
 
 interface AddBookModalProps {
   onFinish: () => void
 }
 
-const SelectItem = forwardRef<HTMLDivElement, Author>(
-  ({ imgsrc, fullName, id, ...others }: Author, ref) => (
-    <div ref={ref} {...others}>
-      <Group noWrap>
-        <Avatar src={imgsrc} />
+const SelectItem = forwardRef<HTMLDivElement, Author>((author: Author, ref) => (
+  <div ref={ref} {...author}>
+    <Group noWrap>
+      <Avatar src={author.imgsrc} />
 
-        <div>
-          <Text>{fullName}</Text>
-          <Text size="xs" color="dimmed">
-            ID: {id}
-          </Text>
-        </div>
-      </Group>
-    </div>
-  )
-)
+      <div>
+        <Text>
+          {author.isGivenSurName
+            ? author.givenName + ' ' + author.surName
+            : author.surName + ' ' + author.givenName}
+        </Text>
+        <Text size="xs" color="dimmed">
+          ID: {author.id}
+        </Text>
+      </div>
+    </Group>
+  </div>
+))
 
 SelectItem.displayName = 'SelectItem'
 
-function Value({ fullName, onRemove, ...others }: MultiSelectValueProps & Author) {
+function Value({
+  surName,
+  givenName,
+  isGivenSurName,
+  onRemove,
+  ...others
+}: MultiSelectValueProps & Author) {
   return (
     <div {...others}>
       <Box
@@ -60,7 +78,9 @@ function Value({ fullName, onRemove, ...others }: MultiSelectValueProps & Author
           paddingLeft: theme.spacing.xs,
           borderRadius: theme.radius.sm
         })}>
-        <Box sx={{ lineHeight: 1, fontSize: rem(12) }}>{fullName}</Box>
+        <Box sx={{ lineHeight: 1, fontSize: rem(12) }}>
+          {isGivenSurName ? givenName + ' ' + surName : surName + ' ' + givenName}
+        </Box>
         <CloseButton
           onMouseDown={onRemove}
           variant="transparent"
@@ -74,72 +94,86 @@ function Value({ fullName, onRemove, ...others }: MultiSelectValueProps & Author
 }
 
 const AddBookModal: React.FC<AddBookModalProps> = ({ onFinish }) => {
-  const books = useSelector((state: RootState) => state.library.books)
-  const authors = useSelector((state: RootState) => state.library.authors)
+  const authors = useSelector((state: RootState) => state.authors.authors)
   const authorsWithValue = authors.map((author: Author) => ({
     ...author,
     value: author.id
   }))
-  const dispatch = useDispatch()
+  const categories = useSelector((state: RootState) => state.categories.categories)
+  const categoriesWithValue = categories.map((category) => ({
+    label: category.name,
+    value: category.id
+  }))
+  const books = useSelector((state: RootState) => state.books.books)
+
+  const dispatch = useAppDispatch()
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      Link,
+      Superscript,
+      SubScript,
+      Highlight,
+      TextAlign.configure({ types: ['heading', 'paragraph'] })
+    ],
+    content: ''
+  })
 
   const form = useForm({
     initialValues: {
+      id: '',
       title: '',
       description: '',
+      bookBio: {
+        id: '',
+        title: '',
+        content: '',
+        contentType: 'BOOK_BIO',
+        date: '',
+        authorId: ''
+      },
       publisher: '',
       publishedDate: '',
       isbn: '',
-      copies: 0,
-      authors: [],
-      imgsrc: ''
-    },
+      numberOfCopies: 0,
+      authorIds: [],
+      bookCopyIds: [],
+      imgsrc: '',
+      categoryIds: []
+    } as Book,
 
     validate: {
-      title: (value) => !value && 'Title is required',
-      description: (value) => !value && 'Description is required',
-      publisher: (value) => !value && 'Publisher is required',
-      publishedDate: (value) => !value && 'Published date is required',
-      isbn: (value) => !value && 'ISBN is required',
-      copies: (value) => !value && 'Copies is required',
-      authors: (value) => !value && 'Authors is required'
+      title: (value: string) => (value.trim().length > 0 ? null : 'Title is required'),
+      description: (value: string) => (value.trim().length > 0 ? null : 'Description is required'),
+      publisher: (value: string) => (value.trim().length > 0 ? null : 'Publisher is required'),
+      publishedDate: (value: string) =>
+        value.trim().length > 0 ? null : 'Published date is required',
+      isbn: (value: string) =>
+        value.trim().length > 0 && !books.find((book) => book.isbn === value)
+          ? null
+          : 'ISBN is required/already exists',
+      numberOfCopies: (value: number) =>
+        value > 0 ? null : 'Number of copies must be greater than 0',
+      authorIds: (value: string[]) => (value.length > 0 ? null : 'Author is required'),
+      categoryIds: (value: string[]) => (value.length > 0 ? null : 'Category is required')
     }
   })
 
-  const handleSubmit = (values: {
-    copies: number
-    title: string
-    isbn: string
-    description: string
-    publisher: string
-    publishedDate: string
-    authors: string[]
-    imgsrc: string | null
-  }) => {
-    const copiesArr: BookCopy[] = []
-    for (let i = 0; i < values.copies; i++) {
-      copiesArr.push({
-        id: generateId(books + i.toString()),
-        status: 'available',
-        borrowerId: null,
-        borrowDate: null,
-        returnDate: null
+  const handleSubmit = async (values: Book) => {
+    console.log(values)
+    await dispatch(
+      addBook({
+        ...values,
+        bookBio: {
+          ...values.bookBio,
+          title: 'Book Bio - ' + values.title,
+          content: editor?.getHTML() || ''
+        }
       })
-    }
-
-    const newBook: Book = {
-      id: generateId(values.title + values.isbn),
-      title: values.title,
-      description: values.description,
-      publisher: values.publisher,
-      publishedDate: values.publishedDate,
-      ISBN: values.isbn,
-      copies: copiesArr,
-      authors: values.authors
-        .map((authorId: string) => authors.find((author: Author) => author.id === authorId))
-        .filter((author: Author | undefined): author is Author => Boolean(author)),
-      imgsrc: values.imgsrc || undefined
-    }
-    dispatch(addBook(newBook))
+    )
+    await dispatch(fetchContents())
     onFinish()
   }
 
@@ -164,14 +198,14 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ onFinish }) => {
             itemComponent={SelectItem}
             valueComponent={Value}
             filter={(value, selected, item) =>
-              !selected &&
-              (item.fullName.toLowerCase().includes(value.toLowerCase().trim()) ||
-                item.id.toLowerCase().includes(value.toLowerCase().trim()))
+              (!selected && item.id.toLowerCase().includes(value.toLowerCase().trim())) ||
+              (!selected && item.surName.toLowerCase().includes(value.toLowerCase().trim())) ||
+              (!selected && item.givenName.toLowerCase().includes(value.toLowerCase().trim()))
             }
             label="Authors"
             placeholder="Select authors"
             required
-            {...form.getInputProps('authors')}
+            {...form.getInputProps('authorIds')}
             searchable
           />
           <TextInput
@@ -198,13 +232,71 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ onFinish }) => {
             {...form.getInputProps('isbn')}
           />
           <NumberInput
-            label="Copies"
+            label="Number of Copies"
             placeholder="Enter number of copies"
             required
-            {...form.getInputProps('copies')}
+            {...form.getInputProps('numberOfCopies')}
           />
+          <MultiSelect
+            data={categoriesWithValue}
+            label="Categories"
+            placeholder="Select categories"
+            {...form.getInputProps('categoryIds')}
+            searchable
+          />
+          <RichTextEditor editor={editor}>
+            <RichTextEditor.Toolbar sticky stickyOffset={50}>
+              <RichTextEditor.ControlsGroup>
+                <RichTextEditor.Bold />
+                <RichTextEditor.Italic />
+                <RichTextEditor.Underline />
+                <RichTextEditor.Strikethrough />
+                <RichTextEditor.ClearFormatting />
+                <RichTextEditor.Highlight />
+                <RichTextEditor.Code />
+              </RichTextEditor.ControlsGroup>
+
+              <RichTextEditor.ControlsGroup>
+                <RichTextEditor.H2 />
+                <RichTextEditor.H3 />
+                <RichTextEditor.H4 />
+              </RichTextEditor.ControlsGroup>
+
+              <RichTextEditor.ControlsGroup>
+                <RichTextEditor.Blockquote />
+                <RichTextEditor.Hr />
+                <RichTextEditor.BulletList />
+                <RichTextEditor.OrderedList />
+                <RichTextEditor.Subscript />
+                <RichTextEditor.Superscript />
+              </RichTextEditor.ControlsGroup>
+
+              <RichTextEditor.ControlsGroup>
+                <RichTextEditor.Link />
+                <RichTextEditor.Unlink />
+              </RichTextEditor.ControlsGroup>
+
+              <RichTextEditor.ControlsGroup>
+                <RichTextEditor.AlignLeft />
+                <RichTextEditor.AlignCenter />
+                <RichTextEditor.AlignJustify />
+                <RichTextEditor.AlignRight />
+              </RichTextEditor.ControlsGroup>
+            </RichTextEditor.Toolbar>
+
+            <RichTextEditor.Content />
+          </RichTextEditor>
           <Group position="right">
-            <Button type="submit">Add</Button>
+            <Button onClick={onFinish}>Cancel</Button>
+            <Button
+              type="submit"
+              color="primary"
+              // onClick={() => {
+              //   console.log(form.values)
+              // }}
+            >
+              Add Book
+            </Button>
           </Group>
         </Stack>
       </form>

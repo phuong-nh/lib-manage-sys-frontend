@@ -1,85 +1,52 @@
 import { Box, Button, Checkbox, Group, Stack, TextInput } from '@mantine/core'
-import { useForm } from '@mantine/form'
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router'
-import authConst from '../../constant/authentication'
 
-import { logout, updateUser } from '../../features/users/slice'
-import { RootState } from '../../store'
 import { User } from '../../types'
+import { RootState, useAppDispatch } from '../../store'
+import { useSelector } from 'react-redux'
+import { useForm } from '@mantine/form'
+import { useNavigate } from 'react-router'
+import { updateUser } from '../../features/users/thunk'
+import { fetchOwnUser, logoutUser } from '../../features/currentUser/thunk'
 
 interface OwnUserInfoProps {
   user: User
   disabled?: boolean
+  onFinish?: () => void
 }
 
-const UserInfo: React.FC<OwnUserInfoProps> = ({ user }) => {
-  const [isFullNameEditable, setIsFullNameEditable] = useState(true)
-  const userList = useSelector((state: RootState) => state.users.users)
-  const dispatch = useDispatch()
+const UserInfo: React.FC<OwnUserInfoProps> = ({ user, onFinish }) => {
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
   const form = useForm({
     initialValues: {
       givenName: user.givenName,
       surName: user.surName,
-      fullName: user.fullName,
+      isGivenSurName: user.isGivenSurName,
       email: user.email,
-      imgsrc: user.imgsrc,
-      authCode: ''
+      imgsrc: user.imgsrc
     },
     validate: {
-      fullName: (value) => {
-        if (!value && isFullNameEditable) return 'Full name is required'
-        if (value && value.split(' ').length < 2) return 'Full name must contain given and surname'
-      },
-      email: (val) => {
-        if (/^\S+@\S+$/.test(val) == false) return 'Invalid email'
-        if (userList.findIndex((user: User) => user.email === val) !== -1 && val !== user.email)
-          return 'Email already exists'
-        return null
-      },
-      imgsrc: (val) => {
-        if (val && !val.startsWith('http')) return 'Image URL must start with http'
-        return null
-      },
-      givenName: (val) => {
-        if (!val && !isFullNameEditable) return 'Given name is required'
-        return null
-      },
-      surName: (val) => {
-        if (!val && !isFullNameEditable) return 'Surname is required'
-        return null
-      }
+      givenName: (value) =>
+        value.trim().length > 0 && value.trim().length < 50 ? null : 'Invalid name',
+      surName: (value) =>
+        value.trim().length > 0 && value.trim().length < 50 ? null : 'Invalid name'
     }
   })
 
-  const handleSubmit = (values: {
-    givenName: string | null
-    fullName: string | null
-    surName: string | null
-    authCode: string | null
-  }) => {
-    if (isFullNameEditable && values.fullName) {
-      values.givenName = values.fullName.split(' ')[0]
-      values.surName = values.fullName.split(' ').slice(1).join(' ')
-    } else {
-      values.fullName = `${values.givenName} ${values.surName}`
+  const handleSubmit = async (formValues: typeof form.values) => {
+    try {
+      const updatedUser: User = {
+        ...formValues,
+        id: user.id,
+        role: user.role
+      }
+      await dispatch(updateUser(updatedUser))
+      await dispatch(fetchOwnUser())
+    } catch (error) {
+      console.log(error)
     }
-    const updatedUser: User = {
-      ...user,
-      givenName: values.givenName,
-      surName: values.surName,
-      fullName: values.fullName,
-      role:
-        values.authCode === authConst.admin
-          ? 'admin'
-          : values.authCode === authConst.user
-          ? 'user'
-          : user.role
-    }
-    dispatch(updateUser(updatedUser))
+    if (onFinish) onFinish()
   }
 
   return (
@@ -89,7 +56,7 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user }) => {
           color="red"
           variant="outline"
           onClick={() => {
-            dispatch(logout())
+            dispatch(logoutUser())
             navigate('/')
           }}>
           Log out
@@ -97,45 +64,28 @@ const UserInfo: React.FC<OwnUserInfoProps> = ({ user }) => {
       </Group>
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
-          <Checkbox
-            label="Use full name"
-            checked={isFullNameEditable}
-            onChange={() => setIsFullNameEditable(!isFullNameEditable)}
-          />
           <Group grow>
-            {isFullNameEditable ? (
-              <>
-                <TextInput
-                  label="Full name"
-                  placeholder="Full name"
-                  required
-                  {...form.getInputProps('fullName')}
-                />
-              </>
-            ) : (
-              <>
-                <TextInput
-                  label="Given name"
-                  placeholder="Given name"
-                  required
-                  {...form.getInputProps('givenName')}
-                />
-                <TextInput
-                  label="Surname"
-                  placeholder="Surname"
-                  required
-                  {...form.getInputProps('surName')}
-                />
-              </>
-            )}
+            <TextInput
+              label="Given name"
+              placeholder="Given name"
+              required
+              {...form.getInputProps('givenName')}
+            />
+            <TextInput
+              label="Surname"
+              placeholder="Surname"
+              required
+              {...form.getInputProps('surName')}
+            />
           </Group>
-          <TextInput label="Email" placeholder="Email" required {...form.getInputProps('email')} />
-          <TextInput label="Image URL" placeholder="Image URL" {...form.getInputProps('imgsrc')} />
           <TextInput
-            label="Authorization code"
-            placeholder="Authorization code"
-            {...form.getInputProps('authCode')}
+            disabled
+            label="Email"
+            placeholder="Email"
+            required
+            {...form.getInputProps('email')}
           />
+          <TextInput label="Image URL" placeholder="Image URL" {...form.getInputProps('imgsrc')} />
           <Group position="right">
             <Button type="submit">Save</Button>
           </Group>

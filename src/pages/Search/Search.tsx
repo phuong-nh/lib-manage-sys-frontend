@@ -1,4 +1,14 @@
-import { Box, Button, Container, Divider, Group, Pagination, TextInput, Title } from '@mantine/core'
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Group,
+  Loader,
+  Pagination,
+  TextInput,
+  Title
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { IconExternalLink } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
@@ -6,17 +16,56 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 
 import SearchCard from '../../components/BookOverviewCard'
-import { borrowBook } from '../../features/library/slice'
-import { RootState } from '../../store'
+import { RootState, useAppDispatch } from '../../store'
+import { fetchBooks } from '../../features/books/thunk'
 import { Author, Book, BookCopy } from '../../types'
+import { fetchAuthors } from '../../features/authors/thunk'
+import { borrowBookCopy, fetchBookCopies } from '../../features/bookCopies/thunk'
+import { fetchOwnUser } from '../../features/currentUser/thunk'
+import { useNavigate } from 'react-router'
 
 const Search = () => {
-  const books = useSelector((state: RootState) => state.library.books)
-  const [searchResults, setSearchResults] = useState<Book[]>(books)
+  const dispatch = useAppDispatch()
+  const books = useSelector((state: RootState) => state.books.books)
+  const bookCopies = useSelector((state: RootState) => state.bookCopies.bookCopies)
+  const authors = useSelector((state: RootState) => state.authors.authors)
+  const currentUser = useSelector((state: RootState) => state.currentUser.user)
+  const currentLoans = useSelector((state: RootState) => state.currentUser.loans)
+  const [searchResults, setSearchResults] = useState<Book[]>([])
   const [searchParams, setSearchParams] = useSearchParams()
-  const dispatch = useDispatch()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isBorrowing, setIsBorrowing] = useState(false)
   const [searchPage, setSearchPage] = useState(1)
-  const currentUser = useSelector((state: RootState) => state.users.currentUser)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const loadBooks = async () => {
+      setIsLoading(true)
+      try {
+        await Promise.all([
+          dispatch(fetchBooks()),
+          dispatch(fetchAuthors()),
+          dispatch(fetchBookCopies())
+        ])
+      } catch (err) {
+        console.log(err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadBooks()
+  }, [dispatch])
+
+  useEffect(() => {
+    setSearchResults(books)
+  }, [books])
+
+  useEffect(() => {
+    if (searchParams.get('value')) {
+      updateSearchResult(searchParams.get('value') || '')
+    }
+  }, [searchParams, books])
 
   const form = useForm({
     initialValues: {
@@ -49,26 +98,29 @@ const Search = () => {
       books.filter((book: Book) => {
         return (
           book.title.toLowerCase().includes(searchTerms.toLowerCase()) ||
-          book.authors
-            .map((author: Author) => author.fullName)
-            .join(', ')
-            .toLowerCase()
+          authors
+            .filter((author) => book.authorIds.includes(author.id))
+            .map((author: Author) =>
+              (author.isGivenSurName
+                ? author.givenName + ' ' + author.surName
+                : author.surName + ' ' + author.givenName
+              ).toLowerCase()
+            )
+            .join(' ')
             .includes(searchTerms.toLowerCase()) ||
-          book.ISBN.toLowerCase().includes(searchTerms.toLowerCase()) ||
+          book.isbn.toLowerCase().includes(searchTerms.toLowerCase()) ||
           book.description.toLowerCase().includes(searchTerms.toLowerCase())
         )
       })
     )
   }
 
-  useEffect(() => {
-    if (searchParams.get('value')) {
-      updateSearchResult(searchParams.get('value') || '')
-    }
-  }, [searchParams])
-
   const handleSubmit = (values: { searchTerms: string }) => {
     setSearchParams(`value=${encodeURIComponent(values.searchTerms)}`)
+  }
+
+  if (isLoading) {
+    return <Loader />
   }
 
   return (
@@ -98,13 +150,11 @@ const Search = () => {
             </Group>
           </form>
         </Box>
-        <Divider variant={'dashed'} />
-        <Box>
-          <Title order={2} my="xs">
-            Results:
-          </Title>
-          {books != undefined && searchResults.length > 0
-            ? getSearchList(searchPage).map((book: Book) => (
+        <Divider my="md" />
+        <Box my="xl">
+          {searchResults.length !== 0 ? (
+            <>
+              {getSearchList(searchPage).map((book: Book) => (
                 <SearchCard
                   key={book.id}
                   book={book}
@@ -114,42 +164,51 @@ const Search = () => {
                         <Button
                           variant="outline"
                           disabled={
-                            books
-                              .find((b: Book) => b.id === book.id)
-                              ?.copies.find(
-                                (copy: BookCopy) => copy.borrowerId === currentUser.id
-                              ) !== undefined ||
-                            book.copies.find((copy: BookCopy) => copy.borrowerId === null) ===
-                              undefined
+                            isBorrowing ||
+                            currentUser.isBanned ||
+                            currentLoans.filter((loan) => loan.bookId === book.id).length !== 0 ||
+                            bookCopies.filter(
+                              (copy: BookCopy) =>
+                                copy.bookId === book.id && copy.status === 'AVAILABLE'
+                            ).length === 0
                           }
-                          onClick={() => {
-                            if (!currentUser.isBanned)
-                              dispatch(
-                                borrowBook({
-                                  bookId: book.id,
-                                  borrowerId: currentUser.id,
-                                  borrowDate: '2021-11-11'
-                                })
-                              )
+                          onClick={async () => {
+                            const availableBookCopy = bookCopies.find(
+                              (copy: BookCopy) =>
+                                copy.bookId === book.id && copy.status === 'AVAILABLE'
+                            )
+                            if (availableBookCopy) {
+                              setIsBorrowing(true) // set borrowing state to true
+                              await dispatch(borrowBookCopy(availableBookCopy.id))
+                              await dispatch(fetchOwnUser()) // update user data
+                              await dispatch(fetchBookCopies()) // update borrowed books data
+                              setIsBorrowing(false) // set borrowing state to false
+                            }
                           }}>
                           Borrow
                         </Button>
                       )}
-                      <Button leftIcon={<IconExternalLink size="1.2em" />}>More</Button>
+                      <Button
+                        leftIcon={<IconExternalLink size="1.2em" />}
+                        onClick={() => navigate('/book/' + book.id)}>
+                        More
+                      </Button>
                     </Group>
                   }
                 />
-              ))
-            : null}
-
-          <Group position="right">
-            <Pagination
-              total={searchResults.length / 5 + 1}
-              onChange={(value) => {
-                setSearchPage(value)
-              }}
-            />
-          </Group>
+              ))}
+              <Box mt="md">
+                <Pagination
+                  total={(searchResults.length - 1) / 5 + 1}
+                  onChange={(value) => {
+                    setSearchPage(value)
+                  }}
+                />
+              </Box>
+            </>
+          ) : (
+            <Title order={5}>No books found.</Title>
+          )}
         </Box>
       </Container>
     </Box>

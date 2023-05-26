@@ -1,49 +1,59 @@
 export interface Author {
   id: string
-  givenName: string | null
-  surName: string | null
-  fullName: string
-  imgsrc: string | null
+  givenName: string
+  surName: string
+  isGivenSurName: boolean
+  imgsrc?: string
+  authorBio: Content
 }
 
 export interface Book {
   id: string
-  ISBN: string
+  isbn: string
   title: string
   description: string
+  bookBio: Content
   publisher: string
-  authors: Author[]
+  authorIds: string[]
+  categoryIds: string[]
   publishedDate: string
-  copies: BookCopy[]
+  bookCopyIds: string[]
+  numberOfCopies: number
   imgsrc?: string
 }
 
 export interface BookCopy {
   id: string
-  status: 'available' | 'borrowed'
-  borrowerId: string | null
-  borrowDate: string | null
-  returnDate: string | null
+  bookId: string
+  status: 'AVAILABLE' | 'BORROWED' | 'RESERVED' | 'LOST'
+  borrowerId?: string
+  borrowDate?: string
+  returnDate?: string
 }
 
 export interface User {
   id: string
-  givenName: string | null
-  surName: string | null
-  fullName: string
-  email: string
-  role: 'user' | 'admin'
-  imgsrc: string | null
+  givenName: string
+  surName: string
+  isGivenSurName: boolean
+  email?: string
+  role: 'USER' | 'STAFF' | 'ADMIN' | 'SUPERUSER'
+  imgsrc?: string
   isBanned?: boolean
 }
 
 export interface Content {
   id: string
-  type: 'news' | 'book-info'
+  contentType: 'NEWS' | 'BLOG' | 'AUTHOR_BIO' | 'BOOK_BIO' | 'OTHER'
   title: string
   content: string
-  imageUrl?: string
+  imgsrc?: string
   date: string
   showOnHomePage?: boolean
-  author: string
+  authorId?: string
+}
+
+export interface Category {
+  id: string
+  name: string
 }

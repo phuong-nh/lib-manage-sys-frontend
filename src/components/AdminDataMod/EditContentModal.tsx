@@ -1,6 +1,6 @@
-import { Box, Button, Group, Stack, Switch, TextInput } from '@mantine/core'
+import { Box, Button, Checkbox, Group, Select, Stack, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RichTextEditor, Link } from '@mantine/tiptap'
 import { useEditor } from '@tiptap/react'
 import Highlight from '@tiptap/extension-highlight'
@@ -10,17 +10,26 @@ import TextAlign from '@tiptap/extension-text-align'
 import Superscript from '@tiptap/extension-superscript'
 import SubScript from '@tiptap/extension-subscript'
 
+import generateId from '../../utils/generateId'
 import { Content } from '../../types'
-import { updateContent } from '../../features/content/slice'
+import getCurrentDate from '../../utils/getCurrentDate'
+import { RootState, useAppDispatch } from '../../store'
+import { addContent, fetchContents, updateContent } from '../../features/contents/thunk'
+import React from 'react'
 
 interface EditContentModalProps {
-  onFinish: () => void
   content: Content
+  onFinish: () => void
 }
 
 function EditContentModal({ onFinish, content }: EditContentModalProps) {
-  const dispatch = useDispatch()
-  const defaultShowOnHomePage = content.showOnHomePage ? content.showOnHomePage : false
+  const currentUser = useSelector((state: RootState) => state.currentUser.user)
+
+  if (!currentUser) {
+    throw new Error('Current User is not defined')
+  }
+
+  const dispatch = useAppDispatch()
 
   const editor = useEditor({
     extensions: [
@@ -38,39 +47,28 @@ function EditContentModal({ onFinish, content }: EditContentModalProps) {
   const form = useForm({
     initialValues: {
       title: content.title,
-      author: content.author,
-      showOnHomePage: defaultShowOnHomePage,
-      imageUrl: content.imageUrl
-    },
-
+      imgsrc: content.imgsrc,
+      contentType: content.contentType,
+      showOnHomePage: content.showOnHomePage
+    } as Content,
     validate: {
-      title: (value: string) => !value && 'Title is required',
-      author: (value: string) => !value && 'Author is required'
+      title: (value: string) => !value && 'Title is required'
     }
   })
 
-  const handleSubmit = (values: {
-    title: string
-    author: string
-    showOnHomePage: boolean
-    imageUrl: string | undefined
-  }) => {
+  const handleSubmit = async (values: Content) => {
     if (!editor || editor.getHTML().length < 10) {
       alert('Content is required')
       return
     } else {
-      const updatedContent: Content = {
+      const newContent: Content = {
+        ...values,
+        date: '',
         id: content.id,
-        title: values.title,
-        author: values.author,
-        content: editor.getHTML(),
-        date: content.date,
-        type: 'news',
-        showOnHomePage: values.showOnHomePage,
-        imageUrl: values.imageUrl
+        content: editor.getHTML()
       }
-      // console.log(values)
-      dispatch(updateContent(updatedContent))
+      await dispatch(updateContent(newContent))
+      await dispatch(fetchContents())
       onFinish()
     }
   }
@@ -80,22 +78,9 @@ function EditContentModal({ onFinish, content }: EditContentModalProps) {
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
           <TextInput label="Title" placeholder="Title" required {...form.getInputProps('title')} />
-          <TextInput
-            label="Author"
-            placeholder="Author"
-            required
-            {...form.getInputProps('author')}
-          />
-          <Switch
-            label="Show on home page"
-            {...form.getInputProps('showOnHomePage')}
-            checked={form.getInputProps('showOnHomePage').value}
-          />
-          <TextInput
-            label="Image URL"
-            placeholder="Image URL"
-            {...form.getInputProps('imageUrl')}
-          />
+          <TextInput label="Image URL" placeholder="Image URL" {...form.getInputProps('imgsrc')} />
+
+          <Select data={['NEWS', 'BLOG']} label="Type" {...form.getInputProps('contentType')} />
 
           <RichTextEditor editor={editor}>
             <RichTextEditor.Toolbar sticky stickyOffset={50}>
@@ -139,6 +124,8 @@ function EditContentModal({ onFinish, content }: EditContentModalProps) {
 
             <RichTextEditor.Content />
           </RichTextEditor>
+
+          <Checkbox label="Show on home page" {...form.getInputProps('showOnHomePage')} />
 
           <Group position="right">
             <Button type="submit">Save</Button>

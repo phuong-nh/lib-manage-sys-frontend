@@ -1,7 +1,9 @@
 import { Card, Image, Text, Group, Center, Avatar, createStyles, rem, Button } from '@mantine/core'
 import { useNavigate } from 'react-router'
+import { getContentAuthorInfo } from '../../api'
 
 import { Content } from '../../types'
+import { useEffect, useState } from 'react'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -54,6 +56,39 @@ export function NewsCard({
     .replace(/(\r\n|\n|\r)/gm, ' ')
     .replace(/\s+/g, ' ')
 
+  const [authorComponent, setAuthorComponent] = useState<JSX.Element | null>(null)
+
+  useEffect(() => {
+    const fetchAuthorInfo = async (authorId: string | undefined) => {
+      try {
+        // console.log(content)
+        if (!authorId) throw new Error('No authorId')
+        const authorInfo = await getContentAuthorInfo(authorId)
+        setAuthorComponent(
+          <Center>
+            <Avatar src={authorInfo.imgsrc || authorInfo.givenName} size={24} radius="xl" mr="xs" />
+            <Text fz="sm" inline>
+              {authorInfo.isGivenSurName
+                ? authorInfo.givenName + ' ' + authorInfo.surName
+                : authorInfo.surName + ' ' + authorInfo.givenName}
+            </Text>
+          </Center>
+        )
+      } catch (e) {
+        setAuthorComponent(
+          <Center>
+            <Avatar src={'Unknown'} size={24} radius="xl" mr="xs" />
+            <Text fz="sm" inline>
+              Unknown
+            </Text>
+          </Center>
+        )
+      }
+    }
+
+    fetchAuthorInfo(content.authorId)
+  }, [content.authorId])
+
   return (
     <Card
       withBorder
@@ -62,7 +97,7 @@ export function NewsCard({
       {...others}
       sx={{ minHeight: '100%' }}>
       <Card.Section>
-        <Image src={content.imageUrl} height={180} />
+        <Image src={content.imgsrc} height={180} />
       </Card.Section>
 
       <Text className={classes.title} fw={500}>
@@ -74,15 +109,10 @@ export function NewsCard({
       </Text>
 
       <Group position="apart" className={classes.footer}>
-        <Center>
-          <Avatar src={content.author} size={24} radius="xl" mr="xs" />
-          <Text fz="sm" inline>
-            {content.author}
-          </Text>
-        </Center>
+        {authorComponent}
         <Button
           onClick={() => {
-            navigate('/content/' + content.id)
+            navigate('/contents/' + content.id)
           }}>
           More
         </Button>

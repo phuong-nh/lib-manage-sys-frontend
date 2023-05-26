@@ -7,7 +7,7 @@ import UserLoans from '../../components/UserLoans'
 import { RootState } from '../../store'
 
 const Profile = () => {
-  const currentUser = useSelector((state: RootState) => state.users.currentUser)
+  const currentUser = useSelector((state: RootState) => state.currentUser.user)
 
   return (
     <Box>

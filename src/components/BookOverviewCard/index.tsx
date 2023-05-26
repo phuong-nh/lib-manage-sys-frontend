@@ -2,6 +2,8 @@ import { Box, Button, Card, Center, Group, Space, Stack, Text, Title } from '@ma
 import React from 'react'
 
 import { Author, Book } from '../../types'
+import { RootState } from '../../store'
+import { useSelector } from 'react-redux'
 
 interface BookOverviewCardProps {
   book: Book
@@ -10,6 +12,7 @@ interface BookOverviewCardProps {
 
 const BookOverviewCard: React.FC<BookOverviewCardProps> = ({ book, actionButton }) => {
   const [expand, setExpand] = React.useState(false)
+  const authors = useSelector((state: RootState) => state.authors.authors)
 
   return (
     <Card radius="md" withBorder my="xs">
@@ -33,7 +36,15 @@ const BookOverviewCard: React.FC<BookOverviewCardProps> = ({ book, actionButton 
           <Box>
             <Title order={3}>{book.title}</Title>
             <Title order={6}>
-              {book.authors.map((author: Author) => author.fullName).join(', ')}
+              {book.authorIds
+                .map((authorId) => {
+                  const author = authors.find((author: Author) => author.id === authorId)
+                  if (!author) return ''
+                  return author.isGivenSurName
+                    ? author.givenName + ' ' + author.surName
+                    : author.surName + ' ' + author.givenName
+                })
+                .join(', ')}
             </Title>
             <Text>
               {book.description.length > 200 && !expand

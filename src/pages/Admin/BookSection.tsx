@@ -15,15 +15,17 @@ import { IconEdit, IconX } from '@tabler/icons-react'
 import { modals } from '@mantine/modals'
 
 import { AddBookModal, EditBookModal } from '../../components/AdminDataMod'
-import { removeBook } from '../../features/library/slice'
 import { Author, Book } from '../../types'
-import { RootState } from '../../store'
+import { RootState, useAppDispatch } from '../../store'
+import { fetchBooks, removeBook } from '../../features/books/thunk'
+import { fetchContents } from '../../features/contents/thunk'
 
 const BookSection = () => {
-  const books = useSelector((state: RootState) => state.library.books)
+  const books = useSelector((state: RootState) => state.books.books)
+  const authors = useSelector((state: RootState) => state.authors.authors)
   const [bookList, setBookList] = useState(books)
   const [bookPage, setBookPage] = useState(1)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setBookList(books)
@@ -45,12 +47,17 @@ const BookSection = () => {
             books.filter((book: Book) => {
               return (
                 book.title.toLowerCase().includes(e.currentTarget.value.toLowerCase()) ||
-                book.authors
-                  .map((author: Author) => author.fullName)
-                  .join(', ')
-                  .toLowerCase()
+                authors
+                  .filter((author) => book.authorIds.includes(author.id))
+                  .map((author: Author) =>
+                    (author.isGivenSurName
+                      ? author.givenName + ' ' + author.surName
+                      : author.surName + ' ' + author.givenName
+                    ).toLowerCase()
+                  )
+                  .join(' ')
                   .includes(e.currentTarget.value.toLowerCase()) ||
-                book.ISBN.toLowerCase().includes(e.currentTarget.value.toLowerCase()) ||
+                book.isbn.toLowerCase().includes(e.currentTarget.value.toLowerCase()) ||
                 book.publishedDate.toLowerCase().includes(e.currentTarget.value.toLowerCase())
               )
             })
@@ -64,7 +71,7 @@ const BookSection = () => {
             <th>Author</th>
             <th>ISBN</th>
             <th>Published</th>
-            <th>Available</th>
+            {/*<th>Available</th>*/}
             <th></th>
             <th></th>
           </tr>
@@ -73,19 +80,30 @@ const BookSection = () => {
           {getBookList(bookPage).map((book: Book) => (
             <tr key={book.id}>
               <td>{book.title}</td>
-              <td>{book.authors.map((author: Author) => author.fullName).join(', ')}</td>
-              <td>{book.ISBN}</td>
-              <td>{book.publishedDate}</td>
               <td>
-                {book.copies.filter((copy) => copy.status === 'available').length}/
-                {book.copies.length}
+                {book.authorIds
+                  .map((authorId) => {
+                    const author = authors.find((author: Author) => author.id === authorId)
+                    if (!author) return ''
+                    return author.isGivenSurName
+                      ? author.givenName + ' ' + author.surName
+                      : author.surName + ' ' + author.givenName
+                  })
+                  .join(', ')}
               </td>
+              <td>{book.isbn}</td>
+              <td>{book.publishedDate}</td>
+              {/*<td>*/}
+              {/*  {book.copies.filter((copy) => copy.status === 'available').length}/*/}
+              {/*  {book.copies.length}*/}
+              {/*</td>*/}
               <td width={'1em'}>
                 <ActionIcon
                   onClick={() => {
                     modals.open({
                       title: <Text fw={700}>Edit Book</Text>,
-                      children: <EditBookModal onFinish={modals.closeAll} book={book} />
+                      children: <EditBookModal onFinish={modals.closeAll} book={book} />,
+                      size: 'xl'
                     })
                   }}>
                   <IconEdit />
@@ -93,8 +111,10 @@ const BookSection = () => {
               </td>
               <td width={'1em'}>
                 <ActionIcon
-                  onClick={() => {
-                    dispatch(removeBook(book.id))
+                  onClick={async () => {
+                    await dispatch(removeBook(book.id))
+                    await dispatch(fetchBooks())
+                    await dispatch(fetchContents())
                   }}>
                   <IconX />
                 </ActionIcon>
@@ -108,7 +128,8 @@ const BookSection = () => {
           onClick={() => {
             modals.open({
               title: <Text fw={700}>Add Book</Text>,
-              children: <AddBookModal onFinish={modals.closeAll} />
+              children: <AddBookModal onFinish={modals.closeAll} />,
+              size: 'xl'
             })
           }}>
           Add Book

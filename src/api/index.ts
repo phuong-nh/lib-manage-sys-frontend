@@ -1,70 +1,31 @@
-import { Book, Author, User, Content } from '../types'
-import * as booksAPI from './localStorage/booksAPI'
-import * as authorsAPI from './localStorage/authorsAPI'
-import * as usersAPI from './localStorage/usersAPI'
-import { mockBooks } from './mock/mockBooks'
-import { mockAuthors } from './mock/mockAuthors'
-import { mockUsers } from './mock/mockUsers'
-import { mockContent } from './mock/mockContent'
+import { Author, Content, User } from '../types'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store'
 
-const checkLocalStorage = <T>(key: string, fallbackData: T[]): T[] => {
-  const data = localStorage.getItem(key)
-  if (data) {
-    return JSON.parse(data)
-  } else {
-    localStorage.setItem(key, JSON.stringify(fallbackData))
-    return fallbackData
+export const getContentAuthorInfo = async (id: string) => {
+  const response = await fetch(import.meta.env.VITE_API_URL + '/users/basicinfo/' + id, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json'
+    }
+  })
+  if (!response.ok) {
+    throw new Error('Failed to get content author info')
   }
+  const data = await response.json()
+  return data as User
 }
 
-export const getBooks = (): Book[] => {
-  return checkLocalStorage<Book>('books', mockBooks)
-}
-
-export const getAuthors = (): Author[] => {
-  return checkLocalStorage<Author>('authors', mockAuthors)
-}
-
-export const getUsers = (): User[] => {
-  return checkLocalStorage<User>('users', mockUsers)
-}
-
-export const getContent = (): Content[] => {
-  return checkLocalStorage<Content>('content', mockContent)
-}
-
-export const addBook = (book: Book): void => {
-  booksAPI.addBook(book)
-}
-
-export const updateBook = (book: Book): void => {
-  booksAPI.updateBook(book)
-}
-
-export const deleteBook = (bookId: string): void => {
-  booksAPI.deleteBook(bookId)
-}
-
-export const addAuthor = (author: Author): void => {
-  authorsAPI.addAuthor(author)
-}
-
-export const updateAuthor = (author: Author): void => {
-  authorsAPI.updateAuthor(author)
-}
-
-export const deleteAuthor = (authorId: string): void => {
-  authorsAPI.deleteAuthor(authorId)
-}
-
-export const addUser = (user: User): void => {
-  usersAPI.addUser(user)
-}
-
-export const updateUser = (user: User): void => {
-  usersAPI.updateUser(user)
-}
-
-export const deleteUser = (userId: string): void => {
-  usersAPI.deleteUser(userId)
+export const getBookAuthorInfo = async (id: string) => {
+  const response = await fetch(import.meta.env.VITE_API_URL + '/authors/' + id, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json'
+    }
+  })
+  if (!response.ok) {
+    throw new Error('Failed to get book author info')
+  }
+  const data = await response.json()
+  return data as Author
 }
