@@ -51,7 +51,9 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
     "react-router": "^6.9.0",
-    "react-router-dom": "^6.9.0"
+    "react-router-dom": "^6.9.0",
+    "vite-plugin-pages": "^0.30.1",
+    "vite-plugin-ssr": "^0.4.131"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
